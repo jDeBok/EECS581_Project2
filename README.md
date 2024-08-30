@@ -31,12 +31,12 @@ Requirements
       3. The player's view should be updated to reflect this (see Player's view below).
       4. After each shot, it is the other players turn.
 3. Destroying a ship
-  1. Once a ship has been hit in every space it occupies, it is sunk.
-  2. For example, if the 1x3 ship occupies spaces B3, B4, and B5.
-  3. Once the opponent has shot those three spaces, that ship is sunk.
+      1. Once a ship has been hit in every space it occupies, it is sunk.
+      2. For example, if the 1x3 ship occupies spaces B3, B4, and B5.
+      3. Once the opponent has shot those three spaces, that ship is sunk.
 4. Player's view
-  1. A player should have full view of their board and where their ships are placed.
-  2. Show how many times each ship has been hit
-  3. A player should have a board to track all shots they've fired and whether they were
+      1. A player should have full view of their board and where their ships are placed.
+      2. Show how many times each ship has been hit
+      3. A player should have a board to track all shots they've fired and whether they were
 misses or hits.
 5. Game End: Once a player has sunk all the opponent's ships, they immediately win
