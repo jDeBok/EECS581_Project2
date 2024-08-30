@@ -2,16 +2,16 @@
 This repo contains the code for our first project, a recreation of the popular game Battleship.
 
 Overview:
-• Let's make Battleship!
-• Battleship is a two-player game.
-• Both players secretly place 1 to 5 ships on a 10x10 grid.
-• Taking turns, each player announces where on the opponent's grid they wish to fire.
-• The opponent must announce whether or not one of the ships was hit.
-• The first player to sink all the opponent's ships wins.
+- Let's make Battleship!
+- Battleship is a two-player game.
+- Both players secretly place 1 to 5 ships on a 10x10 grid.
+- Taking turns, each player announces where on the opponent's grid they wish to fire.
+- The opponent must announce whether or not one of the ships was hit.
+- The first player to sink all the opponent's ships wins.
 
 Requirements
-1. Game Setup
-  a. Board size
+- Game Setup
+  - Board size
     i. 10x10
     ii. The columns are denoted by letters (A-J)
     iii. The rows are denoted by number (1-10)
