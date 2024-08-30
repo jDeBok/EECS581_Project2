@@ -26,10 +26,10 @@ Requirements
   - Ship placement
       1. After the number of ships is chosen, players need to be able to secretly orient and place the ships on their board.
 2. Playing the Game
-  1. Taking turns, the users pick a space on the opponent's board to "fire" at.
-  2. They must then be informed if the shot was a "hit" or a "miss".
-  3. The player's view should be updated to reflect this (see Player's view below).
-  4. After each shot, it is the other players turn.
+      1. Taking turns, the users pick a space on the opponent's board to "fire" at.
+      2. They must then be informed if the shot was a "hit" or a "miss".
+      3. The player's view should be updated to reflect this (see Player's view below).
+      4. After each shot, it is the other players turn.
 3. Destroying a ship
   1. Once a ship has been hit in every space it occupies, it is sunk.
   2. For example, if the 1x3 ship occupies spaces B3, B4, and B5.
