@@ -112,7 +112,7 @@ A class declaration looks like this:
 class ClassName {
   // you literally write constructor here, but field1 and field2 are just stand-ins
   constructor(field1, field2) {
-    // using this is also necessary
+    // using 'this' is also necessary
     this.field1 = field1;
     this.field2 = field2;
   }
@@ -140,7 +140,7 @@ function ClassName(field1, field2) {
     this.field2 = field2;
     // assigning a function to a variable
     this.someMethod = function() {
-      return field1 + field2;
+      return this.field1 + this.field2;
     };
 }
 ```
@@ -164,7 +164,7 @@ In JavaScript, it doesn't really matter what you pass to functions. You can crea
 let myClass = {
   field1: someValue1,
   field2: someValue2,
-  // I'm omitting adding the function because it's more complicated like this
+  // I'm omitting adding the function because it's more complicated to use member variables in a function in a class defined like this
 };
 
 ```
