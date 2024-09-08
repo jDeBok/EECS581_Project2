@@ -619,7 +619,7 @@ You can implement this using a switch statement or something similar which will 
 
 1. The **GameMaster** calls **init()**
    1. For the **UI**, this sets up any event handlers for mouse clicks and sizes the canvas to the page
-   2. The GameModel's init function sets its Gamemode to TitleScreen and returns this message:
+   2. The GameModel's init function sets its **Gamemode** to **Gamemode.TitleScreen** and returns this message:
 - ```javascript 
   {
     code: MessageToUICode.ShowTitleScreen, 
