@@ -1056,7 +1056,7 @@ function Coord(col, row) {
 function MakeBoardCoord(col, row) {
   // converting from string to proper column number
   if (typeof(col) == "string") {
-    // pulled from stack overflow, i'll figure out how it actually works later. this should convert A-J, upper or lowercase, to 0-9
+    // converts string to base 36 (the numerals 0-9 + a-z) then subtracts 10
     col = parseInt(col, 36) - 10;
   }
   row = row - 1;
