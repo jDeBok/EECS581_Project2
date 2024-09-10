@@ -331,7 +331,7 @@ During the first part of the game, when players are setting up their boards, thi
 
 Unplaced ships will be in an array of arrays called **unplacedShips**. Each player has their own array of unplaced ships, and the **unplacedShips** array holds those arrays in player order. We can either keep track of the length of it when a player is placing ships, or keep around an int to see how many ships they have left to place before advancing to the next player. When a ship is placed, it should be moved into the **placedShips** array and the corresponding ship segments should be put into the board for that player.
 
-The **boards** field will be an array of arrays of **GameCells** (I accidentally say **BoardCells** on the UML diagram). Each cell either holds nothing or a **ShipSegment**. It also holds a bool describing whether or not it's been hit.
+The **boards** field will be an array of 2D arrays of **GameCells** (I accidentally say **BoardCells** on the UML diagram). Each cell either holds nothing or a **ShipSegment**. It also holds a bool describing whether or not it's been hit.
 
 Keep track of the current player that's placing. Once no more players need to place ships, return the complete board and ships arrays and pass them to the **MainGameHandler**. Then set the player turn to the first player and change the gamemode to the main game. 
 
@@ -343,9 +343,9 @@ Where the actual game takes place, a step at a time.
 
 The fields, briefly
 
-- ships: array of arrays of ships, stored in player order
-- liveShips: array of integers, stored in player order. keeps track of how many live ships a player has. when it reaches 0, that player loses.
-- boards: array of arrays of **GameCells**, which contain each player's ship segments
+- ships: array of arrays of ships, stored in player order. Specific ships are not stored in any particular order. The general structure when accessing is: \[player]\[ship] 
+- liveShips: array of integers, stored in player order. keeps track of how many live ships a player has. when it reaches 0, that player loses. The general structure when accessing is: \[player]
+- boards: array of arrays of **GameCells**, which contain each player's ship segments. This is an array of 2D arrays, where each 2D array represents the player's board. The structure of accessing is: \[player]\[row]\[column].
 - currentPlayer: the current player (an integer)
 - targetPlayer: the player whose board is being attacked
 
@@ -588,8 +588,8 @@ Data going from the **Gamemodel** to the **UI**.
   - The full array of all ships -- should be only when placing ships at the beginning, the rest of the time we can rely on passing the boards
   - This means its an array of arrays - the first entry corresponds to all of player 1's ships and so on
 - boards
-  - Also an array of arrays, where this time the inner arrays are the boards for each player
-  - will be passed after pretty much every action in the main game
+  - Also an array of arrays, where this time the inner arrays are the boards for each player. General structure of accessing is: \[player]\[row]\[column]
+  - will be passed to the UI after pretty much every action in the main game
 - isHit
   - Boolean for whether or not a shot was a hit
   - Bad shots (shooting the same spot) are controlled by an enum in the message code
@@ -601,7 +601,7 @@ Data going from the **Gamemodel** to the **UI**.
 - isWin
   - boolean indicating whether or not a shot won the game for the player
 - unplacedShips
-  - An array of unplaced ships. Used during ship placement. Each player has several (currently the same amount for everyone) unplaced ships in an array, and this array holds those arrays in the implicit player order (player 1 = 0, player 2 = 1, etc)
+  - An array of unplaced ships. Used during ship placement. Ships are removed from this array after being placed and put into the **ships** array. Each player has several (currently the same amount for everyone) unplaced ships in an array, and this array holds those arrays in the implicit player order (player 1 = 0, player 2 = 1, etc). The order ships are stored in doesn't matter. The general structure of accessing is: \[player]\[ship]
 
 ---
 ### The Flow of the Program
