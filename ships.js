@@ -19,7 +19,7 @@ class Ship {
         this.size = size;
         this.origin = coord;
         this.orientation = orientation;
-        this.segments = segments;
+        this.segments = [];
         this.liveSegments = size; // All segments start live
     }
     segmentHit() {

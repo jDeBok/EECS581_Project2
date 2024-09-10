@@ -9,7 +9,6 @@ class GameModel {
             TitleScreen: 'TitleScreen'
         });
     }
-
     recieveMessage = function(message) {
         return message;
     }
