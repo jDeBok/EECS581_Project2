@@ -16,13 +16,10 @@ class GameModel {
 
 class ShipPlacementHandler{
     constructor(unplacedShips,placedShips,boards,currentPlayer){
-    this.unplacedShips=unplacedShips;
-    this.placedShips=placedShips;
-    this.boards=boards;
-    this.currentPlayer=currentPlayer;
-    }
-    initialize(rules){
-        return; //message
+    this.unplacedShips = unplacedShips;
+    this.placedShips = placedShips;
+    this.boards = boards;
+    this.currentPlayer = currentPlayer;
     }
 
     finishSetup(){
