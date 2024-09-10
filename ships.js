@@ -1,8 +1,10 @@
 //This File Contains the Ship Class, Ship Segment Class and The Coord Class
 
 const Orientation = Object.freeze({   //Enum for orientation of the ship 
-    Vertical: 'Vertical',
-    Horizontal: 'Horizontal'
+    Up: 'Up',
+    Down: 'Down',
+    Left: 'Left',
+    Right: 'right'
 });
 
 class Coord { //class to store the x,y values of coordinates
@@ -18,15 +20,15 @@ class Ship {
         this.origin = coord;
         this.orientation = orientation;
         this.segments = segments;
-        this.live_segments = size; // All segments start live
+        this.liveSegments = size; // All segments start live
     }
     segmentHit() {
-        if (this.live_segments > 0) {
-            this.live_segments -= 1;
+        if (this.liveSegments > 0) {
+            this.liveSegments -= 1;
         }
     }
     isSunk() {
-        return this.live_segments === 0;
+        return this.liveSegments === 0;
     }
 }
 
@@ -34,17 +36,22 @@ class ShipSegment {
     constructor(coord, ship) {
         this.position = coord;
         this.parent = ship;
-        this.is_alive = true;
+        this.isAlive = true;
     }
 
     reportHit() { // notify the ship that this segment has been hit
-        if (this.is_alive) {
-            this.is_alive = false;
+        if (this.isAlive) {
+            this.isAlive = false;
             this.parent.segmentHit(); 
         }
     }
 
-    checkParent() {
+    isParentDead() {
+        return this.parent.liveSegments === 0; //check if parent ship has live segments-- returns true if no live segments
+    }
+}
+
+
         return this.parent.live_segments === 0; //check if parent ship has live segments-- returns true if no live segments
     }
 }
