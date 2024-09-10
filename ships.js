@@ -50,9 +50,3 @@ class ShipSegment {
         return this.parent.liveSegments === 0; //check if parent ship has live segments-- returns true if no live segments
     }
 }
-
-
-        return this.parent.live_segments === 0; //check if parent ship has live segments-- returns true if no live segments
-    }
-}
-
