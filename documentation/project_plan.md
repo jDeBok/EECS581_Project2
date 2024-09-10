@@ -329,7 +329,7 @@ The **GameModel**'s **init()** function (probably not in UML diagram) will set t
 
 During the first part of the game, when players are setting up their boards, this will be used to build each player's board by keeping track of the unplaced ships.
 
-Unplaced ships will be in an array of arrays called **unplacedShips**. We can either keep track of the length of it when a player is placing ships, or keep around an int to see how many ships they have left to place before advancing to the next player. When a ship is placed, it should be moved into the **placedShips** array and the corresponding ship segments should be put into the board for that player.
+Unplaced ships will be in an array of arrays called **unplacedShips**. Each player has their own array of unplaced ships, and the **unplacedShips** array holds those arrays in player order. We can either keep track of the length of it when a player is placing ships, or keep around an int to see how many ships they have left to place before advancing to the next player. When a ship is placed, it should be moved into the **placedShips** array and the corresponding ship segments should be put into the board for that player.
 
 The **boards** field will be an array of arrays of **GameCells** (I accidentally say **BoardCells** on the UML diagram). Each cell either holds nothing or a **ShipSegment**. It also holds a bool describing whether or not it's been hit.
 
@@ -601,7 +601,7 @@ Data going from the **Gamemodel** to the **UI**.
 - isWin
   - boolean indicating whether or not a shot won the game for the player
 - unplacedShips
-  - An array of unplaced ships. Used during ship placement.
+  - An array of unplaced ships. Used during ship placement. Each player has several (currently the same amount for everyone) unplaced ships in an array, and this array holds those arrays in the implicit player order (player 1 = 0, player 2 = 1, etc)
 
 ---
 ### The Flow of the Program
