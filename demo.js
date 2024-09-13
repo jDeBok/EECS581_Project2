@@ -1,0 +1,3 @@
+UI = UIConstructor();
+
+UI.init();
