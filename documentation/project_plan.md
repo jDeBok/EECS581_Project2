@@ -1008,7 +1008,8 @@ const MessageToUICode = Object.freeze({
 	ShotResult: 1,
 	PlacementResult: 2,
 	ShowRuleSelect: 3,
-	EndPlacementMode: 4
+	EndPlacementMode: 4,
+	ShowTitleScreen: 5
 });
 
 // These are classes
