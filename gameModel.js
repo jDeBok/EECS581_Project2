@@ -1,5 +1,3 @@
-import { Ship, ShipSegment, Coord } from './ships.js';
-
 class GameModel {
     constructor() {
         this.gamemode = Object.freeze({   //Enum for Game Mode 
@@ -12,7 +10,26 @@ class GameModel {
         });
     }
     recieveMessage = function(message) {
-        return message;
+        let content = new 
+        //need to flush out this switch
+        switch(message.code) {
+            case MessageToGameModelCode.Advance:
+                break;
+            case MessageToGameModelCode.MakeShot:
+                break;
+            case MessageToGameModelCode.PlaceShip:
+                break;
+            case MessageToGameModelCode.RuleSelect:
+                break;
+            case MessageToGameModelCode.StartGame:
+                let messageBack = new MessageToUICode;
+                Gammode = MainGame;
+
+                break;
+            default:
+                //put error
+                break;
+        }
     }
 }
 

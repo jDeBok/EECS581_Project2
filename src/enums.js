@@ -49,3 +49,11 @@ const MessageToUICode = Object.freeze({
 	EndPlacementMode: 4,
 	ShowTitleScreen: 5
 });
+
+//I don't know where this needs to be, so I put it here for now --Alex
+function MessageToGameModelContent(coords, shipToPlace, shipToPlaceIndex, rules) {
+	this.coords = coords;
+	this.shipToPlace = shipToPlace;
+    this.shipToPlaceIndex = shipToPlaceIndex;
+	this.rules = rules;
+}
