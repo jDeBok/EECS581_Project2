@@ -18,9 +18,21 @@ class GameModel {
             case MessageToGameModelCode.MakeShot:
                 break;
             case MessageToGameModelCode.PlaceShip:
+                shipToPlace = message.content.shipToPlace;
+                index = message.content.shipToPlaceIndex;
+                shipToPlace.origin = index;
+                messageBack = {
+                    code: MessageToUICode.PlacementResult,
+                    content: { 
+                        gamemode: Gamemode.PlaceShips,
+                        currentPlayer: Player.P1, // the current player, not always P1
+                        ships: ships, // updated ships array
+                        unplacedShips: unplacedShips // updated unplacedShips array
+                    }
+                }
                 break;
             case MessageToGameModelCode.RuleSelect:
-                let rules = MessageToGameModelContent.rules;
+                let rules = message.content.rules;
                 messageBack.content = {
                     gamemode: Gamemode.PlaceShips,
                     currentPlayer: Player.P1,
