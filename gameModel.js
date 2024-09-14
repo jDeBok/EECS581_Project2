@@ -11,7 +11,7 @@ class GameModel {
     }
     recieveMessage = function(message) {
         let content = new 
-        //need to flush out this switch
+        //need to flush out this switch (I could be using incorrect syntax I'm sorry)
         switch(message.code) {
             case MessageToGameModelCode.Advance:
                 break;
@@ -20,12 +20,18 @@ class GameModel {
             case MessageToGameModelCode.PlaceShip:
                 break;
             case MessageToGameModelCode.RuleSelect:
+                let rules = message.content.rules;
                 break;
             case MessageToGameModelCode.StartGame:
                 let messageBack = new MessageToUICode;
-                Gammode = MainGame;
-
-                break;
+                messageBack.content = {
+                    gamemode: Gamemode.MainGame,
+                    currentPlayer: Player.P1,
+                    targetPlayer: Player.P2,
+                    ships: ships,
+                    boards: boards
+                }
+                return messageBack;
             default:
                 //put error
                 break;
