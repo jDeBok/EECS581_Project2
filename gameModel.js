@@ -1,3 +1,5 @@
+import { Ship, ShipSegment, Coord } from './ships.js';
+
 class GameModel {
     constructor() {
         this.gamemode = Object.freeze({   //Enum for Game Mode 
