@@ -10,7 +10,7 @@ class GameModel {
         });
     }
     recieveMessage = function(message) {
-        let content = new 
+        let messageBack = new MessageToUICode; //initializng message back
         //need to flush out this switch (I could be using incorrect syntax I'm sorry)
         switch(message.code) {
             case MessageToGameModelCode.Advance:
@@ -20,10 +20,16 @@ class GameModel {
             case MessageToGameModelCode.PlaceShip:
                 break;
             case MessageToGameModelCode.RuleSelect:
-                let rules = message.content.rules;
+                let rules = MessageToGameModelContent.rules;
+                messageBack.content = {
+                    gamemode: Gamemode.PlaceShips,
+                    currentPlayer: Player.P1,
+                    ships: [[]], // array of empty arrays
+                    unplacedShips: unplacedShips //edit based off of rules given                     
+                }
+
                 break;
             case MessageToGameModelCode.StartGame:
-                let messageBack = new MessageToUICode;
                 messageBack.content = {
                     gamemode: Gamemode.MainGame,
                     currentPlayer: Player.P1,
