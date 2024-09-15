@@ -9,6 +9,7 @@ class GameModel {
             TitleScreen: 'TitleScreen'
         });
     
+        this.currentPlayer = null;
         this.p1Ships = []; //init array for playerships
         this.p2Ships = [];
         this.p1Shots = []; //inti array for playershots
@@ -24,6 +25,7 @@ class GameModel {
     
     init() {
         this.gamemode = this.gamemode.TitleScreen;
+        this.currentPlayer = Player.P1;
         this.p1Ships = [];
         this.p2Ships = [];
         this.p1Shots = [];
