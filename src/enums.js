@@ -58,6 +58,12 @@ const UIEvent = Object.freeze({
 });
 
 const UIButton = Object.freeze({
-	Start: 0
+	Start: 0,
+	// sloppy, i know
+	Rule1Ship: 1,
+	Rule2Ship: 2,
+	Rule3Ship: 3,
+	Rule4Ship: 4,
+	Rule5Ship: 5
 });
 
