@@ -649,7 +649,7 @@ UI passes this message to the GameModel, whose state is set to **Gamemode.TitleS
 
 ```javascript
 {
-  code: MessageToGameModelCode.Advance 
+  code: MessageToGameModelCode.StartGame 
 }
 ```
 

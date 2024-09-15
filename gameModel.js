@@ -33,10 +33,10 @@ class GameModel {  // Class object that contains and updates the game state
             SwitchPlayers: 'SwitchPlayers', // State handling transition between player MainGame state
             TitleScreen: 'TitleScreen'      // State handlnig start screen
         });
-    }
+    
         this.p1Ships = []; //init array for playerships
         this.p2Ships = [];
-        this.p1Shots = []; //inti array for playerhsots
+        this.p1Shots = []; //inti array for playershots
         this.p2Shots = [];
         this.unplacedShips = [];
         this.boards = {
@@ -45,6 +45,7 @@ class GameModel {  // Class object that contains and updates the game state
         };
         this.shipPlacementHandler = null; //init ship handler
         this.mainGameHandler = null; //init main handler 
+    }
     
     init() {
         this.gamemode = this.gamemode.TitleScreen;
@@ -65,7 +66,6 @@ class GameModel {  // Class object that contains and updates the game state
     
     recieveMessage = function(message) {
         let messageBack = new MessageToUICode; //initializng message back
-        //need to flush out this switch (I could be using incorrect syntax I'm sorry)
         switch(message.code) {
             case MessageToGameModelCode.Advance:
                 break;
