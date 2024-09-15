@@ -140,12 +140,18 @@ class GameModel {
                 }
                 break;
             case MessageToGameModelCode.RuleSelect:
-                let rules = message.content.rules;
+                let numShips = message.content.rules; //Initialize how many ships for each player
+                unplaced = [[], []] //Initialize unplaced ships array
+                for(let i = 1; i <= numShips; i++) {
+                    let addShip = new Ship(i, new Coord(0,0), Orientation.Up);
+                    unplaced[0].push(addShip);
+                    unplaced[1].push(addShip)
+                }
                 messageBack.content = {
                     gamemode: Gamemode.PlaceShips,
                     currentPlayer: Player.P1,
                     ships: [[]], // array of empty arrays
-                    unplacedShips: unplacedShips //edit based off of rules given                     
+                    unplacedShips: unPlaced //edit based off of rules given                     
                 }
 
                 break;
@@ -186,7 +192,11 @@ class MainGameHandler{
     constructor(ships,liveShips,boards,currentPlayer,targetPlayer){
         this.ships=ships;
         this.liveShips=liveShips;
-        this.boards=boards;
+        this.boards = Array.from({ length: 10 }, () => 
+            Array.from({ length: 10 }, () => 
+                Array.from({ length: 10 }, () => new GameCell())
+            )
+        );
         this.currentPlayer=currentPlayer;
         this.targetPlayer=targetPlayer;
     }
