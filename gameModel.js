@@ -89,8 +89,10 @@ class GameModel {  // Class object that contains and updates the game state
                             content: {
                                 gamemode: Gamemode.PlaceShips,         // Send new game mode Place Ships
                                 currentPlayer: Player.P1,              // Start with player 1
-                                ships: currentPlayer.ships,                // Player's ship array initially empty
-                                unplacedShips: currentPlayer.unplacedShips // Player's ships that must be placed
+                                p1_ships: Player.P1.ships,                  // Player 1's ship array initially empty
+                                p2_ships: Player.P2.ships,                  // Player 2's ship array initially empty
+                                p1_unplacedShips: Player.P1.unplacedShips,  // Player 1's ships that must be placed
+                                p2_unplacedShips: Player.P2.unplacedShips   // Player 2's ships that must be placed
                             }
                         };
                         break;
