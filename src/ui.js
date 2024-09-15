@@ -580,12 +580,16 @@ function UIConstructor() {
   
   function init() {
     boardCanvas = document.createElement("canvas");
+    // meant for background effects
     bgCanvas = document.createElement("canvas");
-    fxCanvas = document.createElement("canvas");
+    // unused in current implementation, was meant to be for adding explosions using shaders
+    // fxCanvas = document.createElement("canvas");
     
     boardCtx = boardCanvas.getContext("2d");
+    // meant for background effects
     bgGl = bgCanvas.getContext("webgl2");
-    fxGl = fxCanvas.getContext("webgl2");
+    // unused in current implementation, was meant to be for adding explosions using shaders
+    // fxGl = fxCanvas.getContext("webgl2");
 
     bgCanvas.style.position    = "absolute";
     boardCanvas.style.position = "absolute";
@@ -609,7 +613,8 @@ function UIConstructor() {
     window.addEventListener("click", trackClick);
     window.addEventListener("keydown", trackKeydown);
 
-    audioCtx = new AudioContext();
+    // unused in current implementation -- meant for sound effects
+    // audioCtx = new AudioContext();
   }
 
   // =========== HELPER DRAWING FUNCTIONS (BOARD) ===========
