@@ -1,6 +1,6 @@
 const Player = Object.freeze({
 	P1: 0,
-  P2: 1
+  	P2: 1
 });
 
 const Module = Object.freeze({  // Enums identifying 
@@ -27,14 +27,14 @@ const Gamemode = Object.freeze({
 	PlaceShips: 1,
 	MainGame: 2,
 	GameWin: 3,
-  SwitchPlayers: 4,
-  TitleScreen: 5
+  	SwitchPlayers: 4,
+  	TitleScreen: 5
 });
 
 const MessageToGameModelCode = Object.freeze({
 	Advance: 0,
 	RuleSelect: 1,
-  StartGame: 2,
+  	StartGame: 2,
 	PlaceShip: 3,	
 	MakeShot: 4
 });
@@ -42,7 +42,7 @@ const MessageToGameModelCode = Object.freeze({
 const MessageToUICode = Object.freeze({
 	BadShot: -2,
 	BadPlacement: -1,
-  ShowBoard: 0,
+  	ShowBoard: 0,
 	ShotResult: 1,
 	PlacementResult: 2,
 	ShowRuleSelect: 3,
@@ -51,7 +51,7 @@ const MessageToUICode = Object.freeze({
 });
 
 const UIEvent = Object.freeze({
-	Nothing:		-1,
+	Nothing: -1,
 	ButtonClick: 0,
 	SoundToggle: 1,
 	GridClick:   2
