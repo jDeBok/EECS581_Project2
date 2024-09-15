@@ -73,27 +73,45 @@ class GameModel {  // Class object that contains and updates the game state
             case MessageToGameModelCode.Advance:
                 break;
             case MessageToGameModelCode.MakeShot:
-
-                let coords = { x: message.content.x_val, y: message.content.y_val }; //coordinates of the shot being made i.e. (A1 ... B4 ... etc)Kyle Spragg
-                let turn = message.content.player; //need to know who shot Kyle Spragg
-
-                if (turn === 0) {
-                    if (P1_Shots.some(shot => shot.x === coords.x && shot.y === coords.y)) {
+                    hit_coords = message.content.coords;
+                    let cell = boards[targetPlayer][hit_coords.row][hit_coords.col];
+                    if(cell.isShotAt === true) {
                         messageBack = {
-                            code: MessageToUICode.BadShot, // send back a bad shot message
+                            code: MessageToUICode.BadShot,
                             content: {
-                                coords: coords,
-                                message: "Shot has already been made."
+                              gamemode: Gamemode.MainGame,
+                              currentPlayer: currentPlayer,
+                              targetPlayer: targetPlayer,
+                              isHit: isHit,
+                              isShotAt: isShotAt,
+                              ships: ships,
+                              boards: boards
                             }
                         };
-                    } else {
+                    }
+                    else if (cell === NULL) {
+                        messageBack = {
+                            code: MessageToUICode.ShotResult, // send back a bad shot message
+                            content: {
+                                gamemode: Gamemode.MainGame,
+                                currentPlayer: currentPlayer,
+                                targetPlayer: targetPlayer,
+                                ships: ships,
+                                isShotAt: true,
+                                hitSegment: hitSegment, 
+                                destroyedShip: destroyedShip,
+                                isWin: false,
+                                boards: boards
+                            }
+                        };
+                    } else if (!cell.Segment.isAlive()){
                         P1_Shots.push(coords); // push the coords if valid shot
                         let hit = P2_Ships.some(ship => ship.contains(coords)); // check to see if its a hit
                         if (hit) { //send hit message
                             messageBack = {
                                 code: MessageToUICode.ShotResult,
                                 content: {
-                                    result: "hit",
+                                    isHit: false,
                                     coords: coords,
                                     currentPlayer: Player.P1,
                                     targetPlayer: Player.P2
@@ -110,46 +128,9 @@ class GameModel {  // Class object that contains and updates the game state
                                 }
                             }
                         }
-                    }
-                } else if (turn === 1) { //if players 2 turn
-
-                    if (P2_Shots.some(shot => shot.x === coords.x && shot.y === coords.y)) { // sets coords for shot
-                        messageBack = { //if shot already has been made
-                            code: MessageToUICode.BadShot,
-                            content: {
-                                coords: coords,
-                                message: "Shot has already been made."
-                            }
-                        }
-                    } else {
-                        P2_Shots.push(coords);//else push shot coords
-                        let hit = P1_Ships.some(ship => ship.contains(coords)); //check if p1 ships contain coords
-                        if (hit) {//send message if hit
-                            messageBack = {
-                                code: MessageToUICode.ShotResult,
-                                content: {
-                                    result: "hit",
-                                    coords: coords,
-                                    currentPlayer: Player.P2,
-                                    targetPlayer: Player.P1
-                                   
-                                }
-                            };
-                        } else{ //send message if miss
-                            messageBack = {
-                                code: MessageToUICode.ShotResult,
-                                content: {
-                                    result: "miss",
-                                    coords: coords,
-                                    currentPlayer: Player.P2,
-                                    targetPlayer: Player.P1
-                                }
-                            }   
-                        }
-                    }
                 }
-                break;
 
+                break;
 
             case MessageToGameModelCode.PlaceShip:
                 shipToPlace = message.content.shipToPlace;
