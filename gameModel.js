@@ -219,3 +219,10 @@ class MainGameHandler{  // Class object representing the actual game
         return; //message
     }
 }
+
+class MessageToUICode{
+    constructor(code, content){
+        this.code = null;
+        this.content = null;
+    }
+}
