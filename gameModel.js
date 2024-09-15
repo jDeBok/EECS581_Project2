@@ -26,6 +26,7 @@ class GameModel {
     init() {
         this.gamemode = this.gamemode.TitleScreen;
         this.currentPlayer = Player.P1;
+        this.targetPlayer = Player.P2;
         this.p1Ships = [];
         this.p2Ships = [];
         this.p1Shots = [];
@@ -155,15 +156,23 @@ class GameModel {
                 }
 
                 break;
-            case MessageToGameModelCode.StartGame:
-                messageBack.content = {
-                    gamemode: Gamemode.MainGame,
-                    currentPlayer: Player.P1,
-                    targetPlayer: Player.P2,
-                    ships: ships,
-                    boards: boards
-                }
-                return messageBack;
+                case MessageToGameModelCode.StartGame:
+                    this.gamemode=this.gamemode.MainGame
+    
+                    messageBack = {
+                        code: MessageToUICode.StartGame,
+                        contents: {
+                            gamemode: this.gamemode.MainGame,
+                            currentPlayer: this.currentPlayer,
+                            targetPlayer: this.targetPlayer,
+                            ships: {
+                            [Player.P1]: this.p1Ships,
+                            [Player.P2]: this.p2Ships     
+                            },
+                            boards: this.boards
+                        }
+                    }
+                    return messageBack;
             default:
                 //put error
                 break;
