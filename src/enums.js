@@ -68,3 +68,11 @@ const MessageToUICode = Object.freeze({  // Enum identifying the type of message
 	EndPlacementMode: 4,  // Tells UI placement is complete and activate a transition animation
 	ShowTitleScreen: 5    // Prompts UI to display title screen
 });
+
+//I don't know where this needs to be, so I put it here for now --Alex
+function MessageToGameModelContent(coords, shipToPlace, shipToPlaceIndex, rules) {
+	this.coords = coords;
+	this.shipToPlace = shipToPlace;
+    this.shipToPlaceIndex = shipToPlaceIndex;
+	this.rules = rules;
+}
