@@ -42,7 +42,75 @@ function UIConstructor() {
 
   // =========== LAYOUTS ===========
 
-  function MakeTitleScreenLayout() {
+  function layoutRect(ctx, bbox, 
+                      fill, stroke=null, strokeRatio=0.001,
+                      text, textColor, textStroke, textStrokeSize=3,
+                      textMargin=0.1
+                      ) {
+      ctx.fillStyle = fill;
+      ctx.fillRect(bbox.x, bbox.y, bbox.width, bbox.height);
+      if (stroke) {
+        ctx.lineWidth = bbox.width * strokeRatio;
+        ctx.strokeStyle = stroke;
+        ctx.strokeRect(bbox.x, bbox.y, bbox.width, bbox.height);
+      }
+      if (text) {
+        let textInfo = fitTextToBbox(
+                        bbox, 
+                        text,
+                        30,
+                        "sans-serif",
+                        textMargin);
+        ctx.fillStyle = textColor;
+        ctx.font = `${textInfo.fontSize}px sans-serif`;
+        ctx.fillText(text, textInfo.bbox.x, textInfo.bbox.y);
+        if (textStroke) {
+          ctx.strokeStyle = "#161F26";
+          ctx.lineWidth = textStrokeSize;
+          ctx.strokeText(text, textInfo.bbox.x, textInfo.bbox.y);
+        }
+      }
+  }
+
+  function layoutButton(ctx, eventInfo, bbox, 
+                        returnCode, text, fill="#DCDCDC",
+                        hoverColor="#DCC2C2", clickColor="#A17979",
+                        stroke="#161F26", strokeSize=3,
+                        textColor="#161F26", textStroke=null,
+                        textStrokeSize=3, textMargin=0.1, 
+                        radius=5) {
+    let hovered = eventInfo.cursor.relativeTo(screenBbox).in(bbox);
+    let clicked = eventInfo.click.useValue && 
+                    eventInfo.click.relativeTo(screenBbox).in(bbox);                     
+    let buttonFill = hovered ? hoverColor : fill;
+    buttonFill = clicked ? clickColor : buttonFill;
+    ctx.fillStyle = buttonFill;
+    if (stroke) {
+      ctx.strokeStyle = stroke;
+      ctx.lineWidth = strokeSize;
+    }
+    roundRect(ctx, bbox.x, bbox.y, bbox.width, bbox.height,
+      radius, true, !(stroke === null));
+      if (text) {
+        let textInfo = fitTextToBbox(
+                        bbox, 
+                        text,
+                        30,
+                        "sans-serif",
+                        textMargin);
+        ctx.fillStyle = textColor;
+        ctx.font = `${textInfo.fontSize}px sans-serif`;
+        ctx.fillText(text, textInfo.bbox.x, textInfo.bbox.y);
+        if (textStroke) {
+          ctx.strokeStyle = "#161F26";
+          ctx.lineWidth = textStrokeSize;
+          ctx.strokeText(text, textInfo.bbox.x, textInfo.bbox.y);
+        }
+      }
+    return clicked ? returnCode : null;
+  }
+
+  function makeTitleScreenLayout() {
     let bgBbox = gameLayoutGrid.makeBbox(0,0);
     let titleTextContainerBbox = gameLayoutGrid.makeBbox(4, 4, 20, 8);
     let titleText = "BattleshipJS";
@@ -73,7 +141,9 @@ function UIConstructor() {
 
       let buttonHovered = eventInfo.cursor.relativeTo(screenBbox).in(startButtonBbox);
       let buttonClicked = eventInfo.click.relativeTo(screenBbox).in(startButtonBbox);
-      
+      if (buttonClicked) {
+        click.useValue = false;
+      }
       // full screen + border
       ctx.fillStyle = "#283745";
       ctx.fillRect(0, 0, bgBbox.width, bgBbox.height);
@@ -89,7 +159,6 @@ function UIConstructor() {
       // title text
       ctx.fillStyle = "#9E1919";
       ctx.font = `${titleTextBboxInfo.fontSize}px sans-serif`;
-      console.log(titleTextBboxInfo);
       ctx.fillText(titleText, titleTextBboxInfo.bbox.x, titleTextBboxInfo.bbox.y);
       ctx.strokeStyle = "#161F26";
       ctx.lineWidth = 3;
@@ -122,8 +191,70 @@ function UIConstructor() {
     return { render };
   }
 
-  function MakeAllLayouts() {
-    return { titleScreen: MakeTitleScreenLayout() };
+  function makeRuleSelectLayout() {
+    let bgBbox = gameLayoutGrid.makeBbox(0,0);
+    let rsHeaderBbox = gameLayoutGrid.makeBbox(4, 2, 20, 5);
+    let rs1Bbox = gameLayoutGrid.makeBbox(8, 6, 16, 8);
+    let rs2Bbox = gameLayoutGrid.makeBbox(8, 9, 16, 11);
+    let rs3Bbox = gameLayoutGrid.makeBbox(8, 12, 16, 14);
+    let rs4Bbox = gameLayoutGrid.makeBbox(8, 15, 16, 17);
+    let rs5Bbox = gameLayoutGrid.makeBbox(8, 18, 16, 20);
+    function render(ctx, eventInfo) {
+      let response = null;
+      layoutRect(ctx, bgBbox, Color.Bg, Color.BgStroke, 0.05);
+      layoutRect(ctx, rsHeaderBbox, 
+                 Color.TextBox, Color.TextBoxStroke, 
+                 0.0005, "Ships Per Team", Color.TextColor);
+      response ||= layoutButton(ctx, eventInfo, 
+                                rs1Bbox, uibtn.Rule1Ship, "1 Ship");
+      response ||= layoutButton(ctx, eventInfo, 
+                                rs2Bbox, uibtn.Rule2Ship, "2 Ships");
+      response ||= layoutButton(ctx, eventInfo, 
+                                rs3Bbox, uibtn.Rule3Ship, "3 Ships");
+      response ||= layoutButton(ctx, eventInfo, 
+                                rs4Bbox, uibtn.Rule4Ship, "4 Ships");
+      response ||= layoutButton(ctx, eventInfo, 
+                                rs5Bbox, uibtn.Rule5Ship, "5 Ships");
+      if (response) {
+        return {code: uie.ButtonClick, content: { button: response }};
+      }
+      else  {
+        return { code: uie.Nothing };
+      }
+    }
+    return { render };
+  }
+
+  function makeGameWinLayout() {
+    let bgBbox = gameLayoutGrid.makeBbox(0,0);
+    let gwHeaderBbox = gameLayoutGrid.makeBbox(4, 4, 20, 8);
+    let startBbox = gameLayoutGrid.makeBbox(8, 16, 16, 20);
+    function render(ctx, eventInfo, winner=1) {
+      let response = null;
+      layoutRect(ctx, bgBbox, Color.Bg, Color.BgStroke, 0.05);
+      layoutRect(ctx, gwHeaderBbox, 
+                 Color.TextBox, Color.TextBoxStroke, 
+                 0.0005, `Player ${winner} Wins!`, 
+                 Color.RedTruth, "#161F26", 3, 0.05);
+      response ||= layoutButton(ctx, eventInfo, 
+                                startBbox, uibtn.Start, "Play again?");
+      if (response) {
+        return {code: uie.ButtonClick, content: { button: response }};
+      }
+      else  {
+        return { code: uie.Nothing };
+      }
+    }
+    return { render };
+  }
+
+  function makeAllLayouts() {
+    return { titleScreen: makeTitleScreenLayout(),
+             ruleSelect : makeRuleSelectLayout(),
+             placeShips : null,
+             mainGame   : null,
+             gameWin    : makeGameWinLayout()
+     };
   }
 
   // =========== HELPER CLASSES, FUNCTIONS ===========
@@ -155,6 +286,7 @@ function UIConstructor() {
     let newFontsize = scaleFactor * fontSize;
     textBbox.centerIn(container);
     textBbox.y += textM.actualBoundingBoxAscent * scaleFactor;
+    textBbox.x += textM.actualBoundingBoxLeft * scaleFactor;
     return { fontSize: newFontsize, bbox: textBbox };
   }
 
@@ -286,7 +418,7 @@ function UIConstructor() {
     }
   }
 
-  // A helpful tool for making bboxes based on a layout.
+  // A tool for making bboxes based on a layout.
   // So you can evenly divide some area into sections and get slices
   // of that area as a bbox.
   function LayoutGrid(bbox, xDivs, yDivs) {
@@ -337,11 +469,17 @@ function UIConstructor() {
     this.click;
     this.key;
     this.latest = function() {
-      // variables that are polled for that are defined below
+      // variables that are polled for
       this.cursor = cursor;
       this.click  = click;
       this.key    = key;
     }
+  }
+
+  EventInfo.invalidate = function() {
+    click.useValue = false;
+    key.useValue = false;
+    isPolling = false;
   }
 
   // =========== VARS ===========
@@ -361,7 +499,6 @@ function UIConstructor() {
   
   // HTML canvas elements and associated contexts
   let boardCanvas, boardCtx;
-  let boardCanvasBuffer, boardCtxBuffer;
   let bgCanvas, bgGl;
   let fxCanvas, fxGl;
 
@@ -418,7 +555,7 @@ function UIConstructor() {
 
     gameLayoutGrid = new LayoutGrid(gameBbox, 24);
 
-    layouts = MakeAllLayouts();
+    layouts = makeAllLayouts();
 
   }
 
@@ -443,14 +580,16 @@ function UIConstructor() {
   
   function init() {
     boardCanvas = document.createElement("canvas");
-    boardCanvasBuffer = document.createElement("canvas");
+    // meant for background effects
     bgCanvas = document.createElement("canvas");
-    fxCanvas = document.createElement("canvas");
+    // unused in current implementation, was meant to be for adding explosions using shaders
+    // fxCanvas = document.createElement("canvas");
     
     boardCtx = boardCanvas.getContext("2d");
-    boardCtxBuffer = boardCanvasBuffer.getContext("2d");
+    // meant for background effects
     bgGl = bgCanvas.getContext("webgl2");
-    fxGl = fxCanvas.getContext("webgl2");
+    // unused in current implementation, was meant to be for adding explosions using shaders
+    // fxGl = fxCanvas.getContext("webgl2");
 
     bgCanvas.style.position    = "absolute";
     boardCanvas.style.position = "absolute";
@@ -474,7 +613,8 @@ function UIConstructor() {
     window.addEventListener("click", trackClick);
     window.addEventListener("keydown", trackKeydown);
 
-    audioCtx = new AudioContext();
+    // unused in current implementation -- meant for sound effects
+    // audioCtx = new AudioContext();
   }
 
   // =========== HELPER DRAWING FUNCTIONS (BOARD) ===========
@@ -570,6 +710,7 @@ function UIConstructor() {
 
   // This routes messages to sub-functions of the UI that handle a specific state of the game
   async function receiveMessage(msg) {
+    EventInfo.invalidate();
     switch (msg.code) {
       case mcode.ShowTitleScreen:
         return await ShowTitleScreen();
@@ -595,16 +736,35 @@ function UIConstructor() {
 
 
   async function ShowTitleScreen() {
-    let msg;
+    let innerEvent;
     isPolling = true;
     let eventInfo = new EventInfo();
-    let temp;
     while (true) {
       eventInfo.latest();
-      msg = layouts.titleScreen.render(boardCtx, eventInfo);
-      if (msg.code == uie.ButtonClick) {
+      innerEvent = layouts.titleScreen.render(boardCtx, eventInfo);
+      if (innerEvent.code == uie.ButtonClick) {
         let msgBack = {
           code: m2gmcode.StartGame
+        };
+        return msgBack;
+      }
+      await sleep(Constant.FrameInterval);
+    }
+  }
+
+  async function RuleSelect() {
+    let innerEvent;
+    isPolling = true;
+    let eventInfo = new EventInfo();
+    while (true) {
+      eventInfo.latest();
+      innerEvent = layouts.ruleSelect.render(boardCtx, eventInfo);
+      if (innerEvent.code == uie.ButtonClick) {
+        let msgBack = {
+          code: m2gmcode.RuleSelect,
+          content: {
+            rules: innerEvent.content.button
+          }
         };
         return msgBack;
       }

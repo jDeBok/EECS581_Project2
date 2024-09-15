@@ -34,6 +34,7 @@ class GameModel {  // Class object that contains and updates the game state
             TitleScreen: 'TitleScreen'      // State handlnig start screen
         });
     
+        this.currentPlayer = null;
         this.p1Ships = []; //init array for playerships
         this.p2Ships = [];
         this.p1Shots = []; //inti array for playershots
@@ -49,6 +50,7 @@ class GameModel {  // Class object that contains and updates the game state
     
     init() {
         this.gamemode = this.gamemode.TitleScreen;
+        this.currentPlayer = Player.P1;
         this.p1Ships = [];
         this.p2Ships = [];
         this.p1Shots = [];
@@ -163,12 +165,18 @@ class GameModel {  // Class object that contains and updates the game state
                 }
                 break;
             case MessageToGameModelCode.RuleSelect:
-                let rules = message.content.rules;
+                let numShips = message.content.rules; //Initialize how many ships for each player
+                unplaced = [[], []] //Initialize unplaced ships array
+                for(let i = 1; i <= numShips; i++) {
+                    let addShip = new Ship(i, new Coord(0,0), Orientation.Up);
+                    unplaced[0].push(addShip);
+                    unplaced[1].push(addShip)
+                }
                 messageBack.content = {
                     gamemode: Gamemode.PlaceShips,
                     currentPlayer: Player.P1,
                     ships: [[]], // array of empty arrays
-                    unplacedShips: unplacedShips //edit based off of rules given                     
+                    unplacedShips: unPlaced //edit based off of rules given                     
                 }
 
                 break;
@@ -207,11 +215,15 @@ class ShipPlacementHandler{
 
 class MainGameHandler{  // Class object representing the actual game
     constructor(ships,liveShips,boards,currentPlayer,targetPlayer){
-        this.ships=ships;                  // 2d array of ships in player order, accessed with ships[player][ship]
-        this.liveShips=liveShips;          // Array of ints which keeps track of the current lives of each ships (total live segments)
-        this.boards=boards;                // 3d array of GameCells containing ships segment, accessed with boards[player][row][column]
-        this.currentPlayer=currentPlayer;  // Int representing current player
-        this.targetPlayer=targetPlayer;    // The player whose board is being targeted
+        this.ships=ships;
+        this.liveShips=liveShips;
+        this.boards = Array.from({ length: 10 }, () => 
+            Array.from({ length: 10 }, () => 
+                Array.from({ length: 10 }, () => new GameCell())
+            )
+        );
+        this.currentPlayer=currentPlayer;
+        this.targetPlayer=targetPlayer;
     }
     sendMessage(){
         return; //message

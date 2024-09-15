@@ -118,3 +118,10 @@ class ShipSegment {
         return this.parent.isSunk();
     }
 }
+
+class GameCell {
+    constructor() {
+        this.content = null;
+        this.isShotat = false;
+    }
+}
