@@ -9,6 +9,35 @@ class GameModel {
             TitleScreen: 'TitleScreen'
         });
     }
+        this.p1Ships = []; //init array for playerships
+        this.p2Ships = [];
+        this.p1Shots = []; //inti array for playerhsots
+        this.p2Shots = [];
+        this.unplacedShips = [];
+        this.boards = {
+            [Player.P1]: [],
+            [Player.P2]: []
+        };
+        this.shipPlacementHandler = null; //init ship handler
+        this.mainGameHandler = null; //init main handler 
+    
+    init() {
+        this.gamemode = this.gamemode.TitleScreen;
+        this.p1Ships = [];
+        this.p2Ships = [];
+        this.p1Shots = [];
+        this.p2Shots = [];
+        this.unplacedShips = [];
+        this.boards = {
+            [Player.P1]: [],
+            [Player.P2]: []
+        };
+
+        this.shipPlacementHandler = new ShipPlacementHandler(this.unplacedShips, this.p1Ships.concat(this.p2Ships), this.boards, Player.P1);
+        this.mainGameHandler = new MainGameHandler({ [Player.P1]: this.p1Ships, [Player.P2]: this.p2Ships }, { [Player.P1]: [], [Player.P2]: [] }, this.boards, Player.P1, Player.P2);
+    }
+
+    
     recieveMessage = function(message) {
         let messageBack = new MessageToUICode; //initializng message back
         //need to flush out this switch (I could be using incorrect syntax I'm sorry)
@@ -133,6 +162,10 @@ class GameModel {
         }
     }
 }
+
+
+
+
 
 class ShipPlacementHandler{
     constructor(unplacedShips,placedShips,boards,currentPlayer){
