@@ -98,6 +98,6 @@ class ShipSegment {
 class GameCell {
     constructor() {
         this.content = null;
-        this.isHit = false;
+        this.isShotat = false;
     }
 }
