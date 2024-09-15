@@ -3,23 +3,23 @@ const Player = Object.freeze({
   P2: 1
 });
 
-const Module = Object.freeze({
+const Module = Object.freeze({  // Enums identifying 
 	GameMaster: 0,
 	GameModel: 1,
 	UI: 2
 });
 
-const Orientation = Object.freeze({
-	Up: 0,
-	Right: 1,
-	Down: 2,
-	Left: 3
+const Orientation = Object.freeze({ // Enums identifying ship orientations
+	Up: 0,     // Ship facing up, -Y direction
+	Right: 1,  // Ship facing right, -X direction
+	Down: 2,   // Ship facing down, +Y direction
+	Left: 3    // Ship facing left, +X direction
 });
 
-const Rotation = Object.freeze({
-	Clockwise: 0,
-	CounterClockwise: 1,
-	Flip: 2
+const Rotation = Object.freeze({  // Enums identifying possible ship manipulations
+	Clockwise: 0,         // Rotate clockwise
+	CounterClockwise: 1,  // Rotate counterclockwise
+	Flip: 2               // Flip (180 degree rotation)
 });
 
 const Gamemode = Object.freeze({

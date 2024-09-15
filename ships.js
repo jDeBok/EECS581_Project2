@@ -1,4 +1,28 @@
-//This File Contains the Ship Class, Ship Segment Class and The Coord Class
+/* 
+ * Program Name:
+ * Ships module
+ * 
+ * Description:
+ * This File Contains the Ship Class, Ship Segment Class and The Coord Class
+ * 
+ * Inputs:
+ * - Information regarding ship and ship segment state
+ * 
+ * Outputs:
+ * - Get methods for status of ships and ship segments
+ * 
+ * Code sources:
+ * Self, MDN web docs, a couple of Stack overflow answers
+ * - Stack Overflow code has a comment preceding it linking the source
+ * 
+ * Author:
+ * Code: Jake Bernard, Alex Doehring, Mark Maloney
+ * Documentation: Drew Meyer
+ * 
+ * Creation Date:
+ * 2024-09-08
+ * 
+ */
 
 const Orientation = Object.freeze({
     // Enum for orientation of the ship, i.e. which direction the ship is facing.

@@ -362,7 +362,7 @@ A cell that makes up any board.
 
 Fields:
 - content: either a **ShipSegment** or **null**
-- isHit: a boolean keeping track of whether or not it's been hit before. Players shouldn't be able to strike the same space twice.
+- isShotAt: a boolean keeping track of whether or not it's been hit before. Players shouldn't be able to strike the same space twice.
 
 ### Coord
 
