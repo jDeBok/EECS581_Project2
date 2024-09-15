@@ -8,10 +8,10 @@ class GameModel {
             SwitchPlayers: 'SwitchPlayers',
             TitleScreen: 'TitleScreen'
         });
-    }
+    
         this.p1Ships = []; //init array for playerships
         this.p2Ships = [];
-        this.p1Shots = []; //inti array for playerhsots
+        this.p1Shots = []; //inti array for playershots
         this.p2Shots = [];
         this.unplacedShips = [];
         this.boards = {
@@ -20,6 +20,7 @@ class GameModel {
         };
         this.shipPlacementHandler = null; //init ship handler
         this.mainGameHandler = null; //init main handler 
+    }
     
     init() {
         this.gamemode = this.gamemode.TitleScreen;
@@ -40,7 +41,6 @@ class GameModel {
     
     recieveMessage = function(message) {
         let messageBack = new MessageToUICode; //initializng message back
-        //need to flush out this switch (I could be using incorrect syntax I'm sorry)
         switch(message.code) {
             case MessageToGameModelCode.Advance:
                 break;
