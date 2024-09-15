@@ -9,5 +9,6 @@ const Color = Object.freeze({
   BgStroke: "#161F26",
   TextBox: "#B4BBCD",
   TextBoxStroke: "#161F26",
-  TextColor: "#161F26"
+  TextColor: "#161F26",
+  RedTruth: "#9E1919"
 });
