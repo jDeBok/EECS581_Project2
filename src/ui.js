@@ -225,12 +225,35 @@ function UIConstructor() {
     return { render };
   }
 
+  function makeGameWinLayout() {
+    let bgBbox = gameLayoutGrid.makeBbox(0,0);
+    let gwHeaderBbox = gameLayoutGrid.makeBbox(4, 4, 20, 8);
+    let startBbox = gameLayoutGrid.makeBbox(8, 16, 16, 20);
+    function render(ctx, eventInfo, winner=1) {
+      let response = null;
+      layoutRect(ctx, bgBbox, Color.Bg, Color.BgStroke, 0.05);
+      layoutRect(ctx, gwHeaderBbox, 
+                 Color.TextBox, Color.TextBoxStroke, 
+                 0.0005, `Player ${winner} Wins!`, 
+                 Color.RedTruth, "#161F26", 3, 0.05);
+      response ||= layoutButton(ctx, eventInfo, 
+                                startBbox, uibtn.Start, "Play again?");
+      if (response) {
+        return {code: uie.ButtonClick, content: { button: response }};
+      }
+      else  {
+        return { code: uie.Nothing };
+      }
+    }
+    return { render };
+  }
+
   function makeAllLayouts() {
     return { titleScreen: makeTitleScreenLayout(),
              ruleSelect : makeRuleSelectLayout(),
              placeShips : null,
              mainGame   : null,
-             winGame    : null
+             gameWin    : makeGameWinLayout()
      };
   }
 
