@@ -37,9 +37,9 @@ class GameModel {  // Class object that contains and updates the game state
     
         this.currentPlayer = null; //initialize 
         this.p1Ships = []; //init array for playerships
-        this.p2Ships = []; 
-        this.unplacedShips = [[]]; //init array for unplacedShips
-        this.boards = Array.from({ length: 10 }, () =>  //builds 2d array board for the game
+        this.p2Ships = [];
+        this.unplacedShips = [];
+        this.boards = Array.from({ length: 10 }, () => 
             Array.from({ length: 10 }, () => 
                 Array.from({ length: 10 }, () => new GameCell())
             )
@@ -48,7 +48,7 @@ class GameModel {  // Class object that contains and updates the game state
         this.mainGameHandler = null; //init main handler 
     }
     
-    init() { //init all the game features, used to reset the game if a win is found
+    init() {
         this.gamemode = this.gamemode.TitleScreen;
         this.currentPlayer = Player.P1;
         this.targetPlayer = Player.P2;
@@ -119,13 +119,13 @@ class GameModel {  // Class object that contains and updates the game state
                         
                 };
 
-                case MessageToGameModelCode.MakeShot: //case to update backend when shot is placed
+                case MessageToGameModelCode.MakeShot:
 
-                let hit_coords = message.content.coords; //gets the coords for the make shot
-                let cell = boards[targetPlayer][hit_coords.row][hit_coords.col]; //finds cell for specified coords
+                let hit_coords = message.content.coords;
+                let cell = boards[targetPlayer][hit_coords.row][hit_coords.col];
 
-                if (cell.isShotAt === true) { //checks if cell is already shot at
-                    messageBack = { //send back bad shot message
+                if (cell.isShotAt === true) {
+                    messageBack = {
                         code: MessageToUICode.BadShot,
                         content: {
                           gamemode: Gamemode.MainGame,
@@ -137,14 +137,13 @@ class GameModel {  // Class object that contains and updates the game state
                           boards: boards
                         }
                     };
-                    return messageBack;//return message
                 
-                } else if (cell.content === NULL) { //if cell does not have a ship segment inside
+                } else if (cell.content === NULL) {
 
-                    cell.isShotAt = true; //switch isShotAt to true on the board
+                    cell.isShotAt = true;
 
-                    messageBack = { // return that cell is shot at but a miss (isHit is False)
-                        code: MessageToUICode.ShotResult, 
+                    messageBack = {
+                        code: MessageToUICode.ShotResult, // send back a bad shot message
                         content: {
                             gamemode: Gamemode.MainGame,
                             currentPlayer: currentPlayer,
@@ -158,103 +157,89 @@ class GameModel {  // Class object that contains and updates the game state
                             boards: boards
                         }
                     };
+                } else if (cell.isAlive){ //send hit message
 
-                    let temp = currentPlayer; //switch players since valid shot was made
-                    currentPlayer = targetPlayer;
-                    targetPlayer = temp;
-                    
-                    return messageBack;//return message
+                        cell.content.reportHit(); 
+                        destroyed = (cell.content.isParentDead());
 
-                } else if (cell.isAlive){ //send hit message to unhit segment
+                        cell.isShotAt = true;
+                        cell.isHit = true;
 
-                    cell.content.reportHit(); //report hit on ship
-                    destroyed = (cell.content.isParentDead()); // report if ship is destroyed by checking if parent is dead
+                        let allSunk = true;
 
-                    cell.isShotAt = true; // report cell was shot
-                    cell.isHit = true; // report cell was hit (since it was a segment)
-
-                    let allSunk = true; // boolean to check if all ships are sunk
-
-                    if (targetPlayer === Player.P1) { //checks if target player == P1 
-                        for (let ship of this.p1_ships) { // checks if all ships are sunk
-                            if (!ship.isSunk()) {
-                                allSunk = false;
+                        if (targetPlayer === Player.P1) {
+                            for (let ship of this.p1_ships) {
+                                if (!ship.isSunk()) {
+                                    allSunk = false;
+                                }
+                            }
+                        } else {
+                            for (let ship of this.p2_ships) {
+                                if (!ship.isSunk()) {
+                                    allSunk = false;
+                                }
                             }
                         }
-                    } else { // else target player is P2
-                        for (let ship of this.p2_ships) {
-                            if (!ship.isSunk()) {
-                                allSunk = false;
-                            }
+                        messageBack = {
+                            code: MessageToUICode.ShotResult,
+                            content: {
+                                gamemode: Gamemode.MainGame,
+                                currentPlayer: currentPlayer,
+                                targetPlayer: targetPlayer,
+                                ships: ships,
+                                isHit: true,
+                                isShotAt: true,
+                                hitSegment: cell.content.position, 
+                                destroyedShip: destroyed, //making this a boolean
+                                isWin: allSunk,
+                                boards: boards,
+                            }   
                         }
-                    }
-                    messageBack = { //send back shot result, whether it was a win, and new board
-                        code: MessageToUICode.ShotResult,
-                        content: {
-                            gamemode: Gamemode.MainGame,
-                            currentPlayer: currentPlayer,
-                            targetPlayer: targetPlayer,
-                            ships: ships,
-                            isHit: true,
-                            isShotAt: true,
-                            hitSegment: cell.content.position, 
-                            destroyedShip: destroyed, // is this a bool?
-                            isWin: allSunk,
-                            boards: boards,
-                        }   
-                    }
-                    let temp = currentPlayer; //switch players after valid shot was made
-                    currentPlayer = targetPlayer;
-                    targetPlayer = temp;
-                    
-                    return messageBack; //return message
             }
-            break; //break case
+
+            break;
             
             case MessageToGameModelCode.RuleSelect:
                 let numShips = message.content.rules; //Initialize how many ships for each player
                 unplaced = [[], []] //Initialize unplaced ships array
-                for(let i = 1; i <= numShips; i++) { //iterate through # of ships
-                    let addShip = new Ship(i, new Coord(0,0), Orientation.Up); //add unplaced ship with base origin 0,0
-                    unplaced[0].push(addShip); // add new unplaced ships for both players
+                for(let i = 1; i <= numShips; i++) {
+                    let addShip = new Ship(i, new Coord(0,0), Orientation.Up);
+                    unplaced[0].push(addShip);
                     unplaced[1].push(addShip)
                 }
-                messageBack.content = { //send back the message with the unplaced ships
+                messageBack.content = {
                     gamemode: Gamemode.PlaceShips,
                     currentPlayer: Player.P1,
                     ships: [[]], // array of empty arrays
                     unplacedShips: unPlaced //edit based off of rules given                     
                 }
 
-                break; //break the case;
-
-            case MessageToGameModelCode.StartGame: //start game case
-                this.gamemode=this.gamemode.MainGame //initializes game
-
-                messageBack = { //sends message back initializing board, players, and ships
-                    code: MessageToUICode.StartGame,
-                    contents: {
-                        gamemode: this.gamemode.MainGame,
-                        currentPlayer: this.currentPlayer,
-                        targetPlayer: this.targetPlayer,
-                        ships: {
-                        [Player.P1]: this.p1Ships,
-                        [Player.P2]: this.p2Ships     
-                        },
-                        boards: this.boards
+                break;
+                case MessageToGameModelCode.StartGame: //start game 
+                    this.gamemode=this.gamemode.MainGame //set gamemode to maingame 
+    
+                    messageBack = { //message to send back to UI
+                        code: MessageToUICode.StartGame, //sedn back a message 
+                        contents: {
+                            gamemode: this.gamemode.MainGame, //game mode as maingame
+                            currentPlayer: this.currentPlayer, //currentplayer (p1 to start)
+                            targetPlayer: this.targetPlayer, //targetplayer (p2 to start)
+                            ships: {
+                            [Player.P1]: this.p1Ships, //array of ships for player 1 
+                            [Player.P2]: this.p2Ships  //array of ships for player 2  
+                            },
+                            boards: this.boards //gamebaord 
+                        }
                     }
-                }
-                return messageBack; //return message
-
+                    return messageBack; //sends message back
             default:
-                
-                console.error(`Error: Case Method ${message} does not exist.`); //error statement if case does not exist
+                //put error
                 break;
         }
     }
 }
 
-class Message{ //message object with code (type of response to message from UI) and content in the message
+class Message{
     constructor(){
         this.code = null;
         this.content = null;
