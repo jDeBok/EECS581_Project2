@@ -68,7 +68,7 @@ class GameModel {  // Class object that contains and updates the game state
 
     
     recieveMessage = function(message) {
-        let messageBack = new MessageToUICode; //initializng message back
+        let messageBack = new Message; //initializng message back
         switch(message.code) {
             case MessageToGameModelCode.Advance:
                 break;
@@ -220,9 +220,13 @@ class MainGameHandler{  // Class object representing the actual game
     }
 }
 
-class MessageToUICode{
-    constructor(code, content){
+class Message{
+    constructor(){
         this.code = null;
         this.content = null;
+    }
+    constructor(code, content){
+        this.code = code;
+        this.content = content
     }
 }
