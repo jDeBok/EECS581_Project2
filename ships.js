@@ -50,7 +50,6 @@ class Ship {
         this.orientation = orientation;  // Orientation Enum
         this.segments = [];              // Array to store ShipSegment objects
         this.liveSegments = size;        // All segments start 'live'
-        this.initializeSegments();
     }
 
     // Initialize ship segments based on size and orientation

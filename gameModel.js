@@ -105,7 +105,7 @@ class GameModel {  // Class object that contains and updates the game state
                             content: {
                                 gamemode: Gamemode.MainGame,  // Send new game mode Main Game
                                 currentPlayer: Player.P1,     // Set current player
-                                targetPlayer: Player.P2       // Set target player
+                                targetPlater: Player.P2       // Set target player
                             }
                         };
                         break;
@@ -122,11 +122,9 @@ class GameModel {  // Class object that contains and updates the game state
                 };
 
             case MessageToGameModelCode.MakeShot:
-
-                    let hit_coords = message.content.coords;
+                    hit_coords = message.content.coords;
                     let cell = boards[targetPlayer][hit_coords.row][hit_coords.col];
-
-                    if (cell.isShotAt === true) {
+                    if(cell.isShotAt === true) {
                         messageBack = {
                             code: MessageToUICode.BadShot,
                             content: {
@@ -139,64 +137,46 @@ class GameModel {  // Class object that contains and updates the game state
                               boards: boards
                             }
                         };
-                    
-                    } else if (cell.content === NULL) {
-
-                        cell.isShotAt = true;
-
+                    }
+                    else if (cell === NULL) {
                         messageBack = {
                             code: MessageToUICode.ShotResult, // send back a bad shot message
                             content: {
                                 gamemode: Gamemode.MainGame,
                                 currentPlayer: currentPlayer,
                                 targetPlayer: targetPlayer,
-                                ships: cell.content.position,
-                                isHit: false,
+                                ships: ships,
                                 isShotAt: true,
                                 hitSegment: hitSegment, 
                                 destroyedShip: destroyedShip,
-                                isWin: isWin,
+                                isWin: false,
                                 boards: boards
                             }
                         };
-                    } else if (cell.isAlive){ //send hit message
-
-                            cell.content.reportHit(); 
-                            destroyed = (cell.content.isParentDead());
-
-                            cell.isShotAt = true;
-                            cell.isHit = true;
-
-                            let allSunk = true;
-
-                            if (targetPlayer === Player.P1) {
-                                for (let ship of this.p1_ships) {
-                                    if (!ship.isSunk()) {
-                                        allSunk = false;
-                                    }
-                                }
-                            } else {
-                                for (let ship of this.p2_ships) {
-                                    if (!ship.isSunk()) {
-                                        allSunk = false;
-                                    }
-                                }
-                            }
+                    } else if (!cell.Segment.isAlive()){
+                        P1_Shots.push(coords); // push the coords if valid shot
+                        let hit = P2_Ships.some(ship => ship.contains(coords)); // check to see if its a hit
+                        if (hit) { //send hit message
                             messageBack = {
                                 code: MessageToUICode.ShotResult,
                                 content: {
-                                    gamemode: Gamemode.MainGame,
-                                    currentPlayer: currentPlayer,
-                                    targetPlayer: targetPlayer,
-                                    ships: ships,
-                                    isHit: true,
-                                    isShotAt: true,
-                                    hitSegment: cell.content.position, 
-                                    destroyedShip: destroyed, //making this a boolean
-                                    isWin: allSunk,
-                                    boards: boards,
-                                }   
+                                    isHit: false,
+                                    coords: coords,
+                                    currentPlayer: Player.P1,
+                                    targetPlayer: Player.P2
+                                }
                             }
+                        } else {
+                            messageBack = { //else send miss message
+                                code: MessageToUICode.ShotResult,
+                                content: {
+                                    result: "miss",
+                                    coords: coords,
+                                    currentPlayer: Player.P1,
+                                    targetPlayer: Player.P2
+                                }
+                            }
+                        }
                 }
 
                 break;
@@ -204,13 +184,18 @@ class GameModel {  // Class object that contains and updates the game state
             case MessageToGameModelCode.PlaceShip:
                 shipToPlace = message.content.shipToPlace;
                 index = message.content.shipToPlaceIndex;
-                shipToPlace.origin = index;
+                unplacedShips[currentPlayer].splice(index, 1);
+                shipToPlace.initializeSegments();
+
+                if(currentPlayer == Player.P1) { p1Ships.push_back(shipToPlace); }
+                else { p2Ships.push_back(shipToPlace) }
+                
                 messageBack = {
                     code: MessageToUICode.PlacementResult,
                     content: { 
                         gamemode: Gamemode.PlaceShips,
                         currentPlayer: Player.P1, // the current player, not always P1
-                        ships: ships, // updated ships array
+                        ships: p1Ships, // updated ships array
                         unplacedShips: unplacedShips // updated unplacedShips array
                     }
                 }
