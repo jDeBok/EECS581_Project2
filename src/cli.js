@@ -3,12 +3,27 @@ function UIConstructor() {
   let cmd, cmdBtn, asciiOut, asciiOut2, immed;
   // needed for tracking state -- the current ship when placing ships
   let currentShip;
+  // the function to be executed on each step after data has been received from game model
+  let btnCallback;
+  
+  // the wrapper function around the one above
+  function handleCmd() {
+    // if no callback is defined, ignore
+    if (btnCallback) {
+      // otherwise, call the current callback
+      btnCallback();
+      // then set the callback to null
+      btnCallback = null;
+    }
+  }
+
   // grabs all html elements
   function init() { 
     // the simulated command line
     cmd = document.getElementById("cmd");
     // the submit button
     cmdBtn = document.getElementById("submitCmd");
+    cmdBtn.addEventListener("click", handleCmd);
     // the first text output
     asciiOut = document.getElementById("asciiOut");
     // the second text output
@@ -42,7 +57,7 @@ function UIConstructor() {
     }
   }
 
-  
+
 
   function drawGridForPlacement(board) {
     asciiOut.innerHtml = `Place your ships, player ${player + 1}\n`;
