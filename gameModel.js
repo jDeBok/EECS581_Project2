@@ -61,8 +61,6 @@ class GameModel {  // Class object that contains and updates the game state
             )
         );
 
-        this.shipPlacementHandler = new ShipPlacementHandler(this.unplacedShips, this.p1Ships.concat(this.p2Ships), this.boards, Player.P1);
-        this.mainGameHandler = new MainGameHandler({ [Player.P1]: this.p1Ships, [Player.P2]: this.p2Ships }, { [Player.P1]: [], [Player.P2]: [] }, this.boards, Player.P1, Player.P2);
     }
 
 
@@ -240,37 +238,6 @@ class GameModel {  // Class object that contains and updates the game state
                 //put error
                 break;
         }
-    }
-}
-
-
-class ShipPlacementHandler{
-    constructor(unplacedShips,placedShips,boards,currentPlayer){
-    this.unplacedShips = unplacedShips;  // Unplaced ships are held in a 2d array with one nested array for each player
-    this.placedShips = placedShips;      // Unplaced ships moved to this 2d array when moved to the board
-    this.boards = boards;                // 2d array of GameCells which comprise the playable board
-    this.currentPlayer = currentPlayer;  // Tracks current turn's player
-    }
-
-    finishSetup(){  // Method to retrieve board state
-        return this.boards;
-    }
-}
-
-class MainGameHandler{  // Class object representing the actual game
-    constructor(ships,liveShips,boards,currentPlayer,targetPlayer){
-        this.ships=ships;
-        this.liveShips=liveShips;
-        this.boards = Array.from({ length: 10 }, () => 
-            Array.from({ length: 10 }, () => 
-                Array.from({ length: 10 }, () => new GameCell())
-            )
-        );
-        this.currentPlayer=currentPlayer;
-        this.targetPlayer=targetPlayer;
-    }
-    sendMessage(){
-        return; //message
     }
 }
 
