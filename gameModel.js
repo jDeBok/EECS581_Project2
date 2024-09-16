@@ -188,7 +188,19 @@ class GameModel {  // Class object that contains and updates the game state
                 else { p2Ships.push_back(shipToPlace) }
 
                 for(let segment of ship.segments) {
-                    boards[currentPlayer][segment.position.row][segment.position.col] = segment;
+                    if(boards[currentPlayer][segment.position.row][segment.position.col] != null) {
+                        boards[currentPlayer][segment.position.row][segment.position.col] = segment;
+                    }
+                    else {
+                        messageBack.code = MessageToUICode.BadPlacement,
+                        messageBack.content = { 
+                            gamemode: Gamemode.PlaceShips,
+                            currentPlayer: Player.P1, // the current player, not always P1
+                            ships: ships, // updated ships array
+                            unplacedShips: unplacedShips // updated unplacedShips array
+                        }
+                        return messageBack;
+                    }
                 }
 
                 messageBack = {
