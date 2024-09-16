@@ -64,7 +64,7 @@ class GameModel {  // Class object that contains and updates the game state
     }
 
 
-    recieveMessage = function(message) {
+    receiveMessage = function(message) {
         let messageBack = new Message; //initializng message back
         switch(message.code) {
             case MessageToGameModelCode.Advance: // Used in transitions between states | Drew Meyer
