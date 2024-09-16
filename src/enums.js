@@ -47,7 +47,8 @@ const MessageToUICode = Object.freeze({
 	PlacementResult: 2,
 	ShowRuleSelect: 3,
 	EndPlacementMode: 4,
-	ShowTitleScreen: 5
+	ShowTitleScreen: 5,
+	ShowPlacement: 6
 });
 
 const UIEvent = Object.freeze({
