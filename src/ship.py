@@ -1,5 +1,34 @@
 from board import board_size  # Import board_size from the board module.
 
+def convert_Char_to_intIndex( char_switch ):
+    # This function converts a char into a zero indexed number for the board
+    if( type( char_switch ) == str ):
+        c = char_switch.lower() #make sure the input is a string
+    else:
+        c = "error" #c is not a char, is bad
+    if c == "a" : #a to 0
+        return 0
+    elif c == "b" : #b to 1
+        return 1
+    elif c == "c" : #c to 2
+        return 2
+    elif c == "d" : #d to 3
+        return 3
+    elif c == "e" : #e to 4
+        return 4
+    elif c == "f" : #f to 5
+        return 5
+    elif c == "g" : #g to 6
+        return 6
+    elif c == "h" : #h to 7
+        return 7
+    elif c == "i" : #i to 8
+        return 8
+    elif c == "j" : #j to 9
+        return 9
+    else:
+        return -1 #error
+
 def place_ship(board, ship_size, ship_id, ship_positions):
     while True:  # Loop until a valid ship placement is made.
         try:
@@ -12,8 +41,12 @@ def place_ship(board, ship_size, ship_id, ship_positions):
                 continue  # Restart the loop if invalid orientation is provided.
             
             # Get the starting row and column from the user.
-            start_row = int(input("Enter starting row (0-9): "))
-            start_col = int(input("Enter starting column (0-9): "))
+            start_row = int(input("Enter starting row (1-10): "))   #team 9 changed this to use 1 indexing per project specs
+            start_col = str(input("Enter starting column (A-J): ")) #team 9 changed this to use char indexing
+            
+            start_row = start_row - 1 #uses zero indexing now
+            start_col = convert_Char_to_intIndex( start_col ) #converts the char input to a 0 indexed value
+            
             
             # Check if the starting position is within the bounds of the board.
             if not (0 <= start_row < board_size and 0 <= start_col < board_size):
