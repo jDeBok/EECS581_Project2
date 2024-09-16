@@ -22,7 +22,7 @@
  * 2024-09-08
  * 
  */
-
+import { Orientation, Coord, Ship, ShipSegment, GameCell } from './ships.js';
 
 class GameModel {  // Class object that contains and updates the game state
     constructor() {
