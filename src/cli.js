@@ -1,9 +1,12 @@
 function UIConstructor() {
-  
-  function init() { }
-  
+  let cmd, cmdBtn, asciiOut;
+  let currentShip;
+  function init() { 
+    cmd = document.getElementById("cmd");
+    cmdBtn = document.getElementById("submitCmd");
+    asciiOut = document.getElementById("asciiOut");
+  }
   function receiveMessage(msg) {
-    EventInfo.invalidate();
     switch (msg.code) {
       case MessageToUICode.ShowTitleScreen:
         return ShowTitleScreen();
@@ -26,6 +29,5 @@ function UIConstructor() {
         return MainGameStep(msg);
     }
   }
-  
   return { init, receiveMessage };
 }
