@@ -41,10 +41,11 @@ class GameModel {  // Class object that contains and updates the game state
         this.p1Shots = []; //init array for playerhsots
         this.p2Shots = [];
         this.unplacedShips = [];
-        this.boards = {
-            [Player.P1]: [],
-            [Player.P2]: []
-        };
+        this.boards = Array.from({ length: 10 }, () => 
+            Array.from({ length: 10 }, () => 
+                Array.from({ length: 10 }, () => new GameCell())
+            )
+        );
         this.shipPlacementHandler = null; //init ship handler
         this.mainGameHandler = null; //init main handler 
     }
@@ -58,10 +59,11 @@ class GameModel {  // Class object that contains and updates the game state
         this.p1Shots = [];
         this.p2Shots = [];
         this.unplacedShips = [];
-        this.boards = {
-            [Player.P1]: [],
-            [Player.P2]: []
-        };
+        this.boards = Array.from({ length: 10 }, () => 
+            Array.from({ length: 10 }, () => 
+                Array.from({ length: 10 }, () => new GameCell())
+            )
+        );
 
         this.shipPlacementHandler = new ShipPlacementHandler(this.unplacedShips, this.p1Ships.concat(this.p2Ships), this.boards, Player.P1);
         this.mainGameHandler = new MainGameHandler({ [Player.P1]: this.p1Ships, [Player.P2]: this.p2Ships }, { [Player.P1]: [], [Player.P2]: [] }, this.boards, Player.P1, Player.P2);
@@ -292,9 +294,5 @@ class Message{
     constructor(){
         this.code = null;
         this.content = null;
-    }
-    constructor(code, content){
-        this.code = code;
-        this.content = content
-    }
+}
 }
