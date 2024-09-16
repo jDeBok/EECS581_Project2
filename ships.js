@@ -122,6 +122,7 @@ class ShipSegment {
 class GameCell {
     constructor() {
         this.content = null;
-        this.isShotat = false;
+        this.isShotAt = false;
+        this.isHit = false;
     }
 }
