@@ -21,15 +21,19 @@
 </head>
 <body>
 </body>
-<div id="asciiOut" style="width: 100%; min-height: 12em;"></div>
+<code id="asciiOut" style="width: 100%; min-height: 12em;"></div>
+<code id="asciiOut2" style="width: 100%; min-height: 12em;"></div>
+<p id="feedback"></p>
 <input id="cmd" /> 
 <button id="submitCmd">submit command</button>
-<h2>List of Commands</h2>
+<h2>List of Commands & How To Play</h2>
 <ul>
   <li>placing ships is or firing a shot is done with <code>r,c</code>, where r is the row and c is the column</li>
   <li>the literal <code>r</code> character will rotate a ship while in placement mode</li>
   <li>when waiting for the next player etc., any characters + submit will advance</li>
   <li><code>s1</code>-<code>s5</code> will select ships of each size while in placement mode</li>
+  <li><code>s</code> is a ship, <code>d</code> is a destroyed ship, <code>~</code> is water</li>
+  <li><code>x</code> is a hit, <code>o</code> is a miss, <code>~</code> is unknown</li>
 </ul>
 <img hidden src="img/shipbody.png" id="shipbody" />
 <img hidden src="img/shiptip.png" id="shiptip" />
