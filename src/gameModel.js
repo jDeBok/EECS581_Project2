@@ -139,7 +139,7 @@ class GameModel {  // Class object that contains and updates the game state
                           boards: boards
                         }
                     };
-                    return messageBack;//sends message back
+                    return messageBack;//sends message back, dont change players
                 
                 } else if (cell.content === NULL) { //if cell is not a ship segment
 
@@ -160,7 +160,12 @@ class GameModel {  // Class object that contains and updates the game state
                             boards: boards
                         }
                     };
+                    let temp = currentPlayer; //change players
+                    currentPlayer = targetPlayer;
+                    targetPlayer = temp;
+
                     return messageBack;//sends message back
+
                 } else if (cell.isAlive){ //send hit message
 
                         cell.content.reportHit(); //report valid hit
@@ -199,10 +204,18 @@ class GameModel {  // Class object that contains and updates the game state
                                 boards: boards,
                             }   
                         }
-                        return messageBack;//sends message back
-            }
 
-            break;
+                        let temp = currentPlayer; //change players
+                        currentPlayer = targetPlayer;
+                        targetPlayer = temp;
+
+                        return messageBack;//sends message back
+                    } else {
+                        console.error(`Error: Message ${message} is not valid.`);
+                        break;
+                    }
+
+
             
             case MessageToGameModelCode.RuleSelect:
                 let numShips = message.content.rules; //Initialize how many ships for each player
@@ -220,7 +233,6 @@ class GameModel {  // Class object that contains and updates the game state
                 }
                 return messageBack; //sends message back
 
-                break;
                 case MessageToGameModelCode.StartGame: //start game 
                     this.gamemode=this.gamemode.MainGame //set gamemode to maingame 
     
