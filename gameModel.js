@@ -38,8 +38,6 @@ class GameModel {  // Class object that contains and updates the game state
         this.currentPlayer = null;
         this.p1Ships = []; //init array for playerships
         this.p2Ships = [];
-        this.p1Shots = []; //init array for playerhsots
-        this.p2Shots = [];
         this.unplacedShips = [];
         this.boards = Array.from({ length: 10 }, () => 
             Array.from({ length: 10 }, () => 
@@ -56,8 +54,6 @@ class GameModel {  // Class object that contains and updates the game state
         this.targetPlayer = Player.P2;
         this.p1Ships = [];
         this.p2Ships = [];
-        this.p1Shots = [];
-        this.p2Shots = [];
         this.unplacedShips = [];
         this.boards = Array.from({ length: 10 }, () => 
             Array.from({ length: 10 }, () => 
