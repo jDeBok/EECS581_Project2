@@ -51,7 +51,7 @@ const MessageToUICode = Object.freeze({
 });
 
 const UIEvent = Object.freeze({
-	Nothing: -1,
+	Nothing:		-1,
 	ButtonClick: 0,
 	SoundToggle: 1,
 	GridClick:   2
@@ -64,6 +64,13 @@ const UIButton = Object.freeze({
 	Rule2Ship: 2,
 	Rule3Ship: 3,
 	Rule4Ship: 4,
-	Rule5Ship: 5
+	Rule5Ship: 5,
+	NextPlayer:6,
+	// more sloppiness
+	Select1: 7,
+	Select2: 8,
+	Select3: 9,
+	Select4: 10,
+	Select5: 11
 });
 
