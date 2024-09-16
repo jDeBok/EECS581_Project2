@@ -487,6 +487,9 @@ function UIConstructor() {
   // DEBUG mode
   const DEBUG = true;
 
+  // ship sprites
+  let shipbody, shiptip, shiprubble;
+
   // functions on intervals that need to be revoked/set differently
   let frameRenderFunc;
   let intervalFuncCode;
@@ -500,7 +503,8 @@ function UIConstructor() {
   // HTML canvas elements and associated contexts
   let boardCanvas, boardCtx;
   let bgCanvas, bgGl;
-  let fxCanvas, fxGl;
+  // let fxCanvas, fxGl;
+  let spriteCanvas, spriteCtx;
 
   // Measurements positions for screen placement
   let winBbox = new BoundingBox();
@@ -544,11 +548,11 @@ function UIConstructor() {
     screenBbox.x = Math.trunc((winBbox.width - screenBbox.width) / 2);
     screenBbox.y = Math.trunc((winBbox.height - screenBbox.height) / 2);
 
-    boardCanvas.width = fxCanvas.width = screenBbox.width;
-    boardCanvas.height = fxCanvas.height = screenBbox.height;
+    boardCanvas.width /* = fxCanvas.width */ = screenBbox.width;
+    boardCanvas.height /* = fxCanvas.height */ = screenBbox.height;
     
-    boardCanvas.style.left = fxCanvas.style.left = screenBbox.x + "px";
-    boardCanvas.style.top  = fxCanvas.style.top  = screenBbox.y + "px";
+    boardCanvas.style.left /* = fxCanvas.style.left */ = screenBbox.x + "px";
+    boardCanvas.style.top /* = fxCanvas.style.top */ = screenBbox.y + "px";
 
     gameBbox.width  = screenBbox.width;
     gameBbox.height = screenBbox.height;
@@ -584,27 +588,30 @@ function UIConstructor() {
     bgCanvas = document.createElement("canvas");
     // unused in current implementation, was meant to be for adding explosions using shaders
     // fxCanvas = document.createElement("canvas");
+    // used for rotating sprites etc
+    spriteCanvas = new OffscreenCanvas(50,50);
     
     boardCtx = boardCanvas.getContext("2d");
     // meant for background effects
     bgGl = bgCanvas.getContext("webgl2");
     // unused in current implementation, was meant to be for adding explosions using shaders
     // fxGl = fxCanvas.getContext("webgl2");
+    spriteCtx = spriteCanvas.getContext("2d");
 
     bgCanvas.style.position    = "absolute";
     boardCanvas.style.position = "absolute";
-    fxCanvas.style.position    = "absolute";
+    // fxCanvas.style.position    = "absolute";
 
     bgCanvas.style.top = "0";
     bgCanvas.style.left = "0";
 
     bgCanvas.style.zindex    = "1";
     boardCanvas.style.zindex = "2";
-    fxCanvas.style.zindex    = "3";
+    // fxCanvas.style.zindex    = "3";
 
     document.body.appendChild(bgCanvas);
     document.body.appendChild(boardCanvas);
-    document.body.appendChild(fxCanvas);
+    // document.body.appendChild(fxCanvas);
 
     resizeScreen();
 
@@ -612,6 +619,10 @@ function UIConstructor() {
     window.addEventListener("mousemove", trackCursor);
     window.addEventListener("click", trackClick);
     window.addEventListener("keydown", trackKeydown);
+
+    shipbody   = document.getElementById("shipbody");
+    shiptip    = document.getElementById("shiptip");
+    shiprubble = document.getElementById("shiprubble");
 
     // unused in current implementation -- meant for sound effects
     // audioCtx = new AudioContext();
@@ -689,6 +700,64 @@ function UIConstructor() {
     }
     ctx.stroke();
   }
+
+  function drawO(ctx, bbox) {
+    let margin = 0.025 * bbox.width;
+    ctx.lineWidth = bbox.width / 5;
+    ctx.strokeStyle = Color.HitGreen;
+    ctx.lineCap = "butt";
+    ctx.moveTo(bbox.x + bbox.width / 2, bbox.y + bbox.height / 2);
+    ctx.arc(bbox.x + bbox.width / 2, bbox.y + bbox.height / 2, 
+            (bbox.height / 2) - margin, 0, 2.1 * Math.PI);
+    ctx.stroke();
+  }
+
+  function drawX(ctx, bbox) {
+    let margin = 0.025 * bbox.width;
+    ctx.lineWidth = bbox.width / 5;
+    ctx.strokeStyle = Color.RedTruth;
+    ctx.lineCap = "butt";
+    ctx.moveTo(bbox.x + margin, bbox.y + margin);
+    ctx.lineTo(bbox.x + bbox.width - margin, bbox.y + bbox.height - margin);
+    ctx.moveTo(bbox.x + bbox.width - margin,  bbox.y + margin);
+    ctx.lineTo(bbox.x + margin, bbox.y + bbox.height - margin);
+    ctx.stroke();
+  }
+
+  function drawShips(ctx, bboxGrid, ships) {
+    let ship;
+    let bbox;
+    for (let i = 0; i < ships.length; i++) {
+      ship = ships[i];
+      for (let j = 0; j < ship.segments.length; j++) {
+        bbox = bboxGrid.getBbox(ship.segments[j].pos.row, ship.segments[j].pos.col);
+        if (!ship.isAlive) {
+          spriteCtx.drawImage(shiprubble, 0, 0);
+          spriteCtx.rotate(0);
+        }
+        else if (ship.segments.length == 1) {
+          spriteCtx.drawImage(shiptiny, 0, 0);
+          spriteCtx.rotate(Math.PI / -2 * (ship.orientation - 1));
+        }
+        else if (j == 0) {
+          spriteCtx.drawImage(shiptip, 0, 0);
+          spriteCtx.rotate(Math.PI / -2 * (ship.orientation - 1) + Math.PI);
+
+        }
+        else if (j == ship.segments.length - 1) {
+          spriteCtx.drawImage(shiptip, 0, 0);
+          spriteCtx.rotate(Math.PI / -2 * (ship.orientation - 1));
+        }
+        else {
+          spriteCtx.drawImage(shipbody, 0, 0);
+          spriteCtx.rotate(Math.PI / -2 * (ship.orientation - 1));
+        }
+        ctx.drawImage(spriteCanvas, bbox.x, bbox.y, bbox.width, bbox.height);
+      }
+    }
+  }
+
+  
 
 
   // =========== FRAME RENDER FUNCTIONS ===========
