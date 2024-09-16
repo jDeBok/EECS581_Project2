@@ -215,23 +215,23 @@ class GameModel {  // Class object that contains and updates the game state
                 }
 
                 break;
-                case MessageToGameModelCode.StartGame:
-                    this.gamemode=this.gamemode.MainGame
+                case MessageToGameModelCode.StartGame: //start game 
+                    this.gamemode=this.gamemode.MainGame //set gamemode to maingame 
     
-                    messageBack = {
-                        code: MessageToUICode.StartGame,
+                    messageBack = { //message to send back to UI
+                        code: MessageToUICode.StartGame, //sedn back a message 
                         contents: {
-                            gamemode: this.gamemode.MainGame,
-                            currentPlayer: this.currentPlayer,
-                            targetPlayer: this.targetPlayer,
+                            gamemode: this.gamemode.MainGame, //game mode as maingame
+                            currentPlayer: this.currentPlayer, //currentplayer (p1 to start)
+                            targetPlayer: this.targetPlayer, //targetplayer (p2 to start)
                             ships: {
-                            [Player.P1]: this.p1Ships,
-                            [Player.P2]: this.p2Ships     
+                            [Player.P1]: this.p1Ships, //array of ships for player 1 
+                            [Player.P2]: this.p2Ships  //array of ships for player 2  
                             },
-                            boards: this.boards
+                            boards: this.boards //gamebaord 
                         }
                     }
-                    return messageBack;
+                    return messageBack; //sends message back
             default:
                 //put error
                 break;
