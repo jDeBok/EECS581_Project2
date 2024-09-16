@@ -2,6 +2,35 @@ from board import create_board, print_board, board_size  # Import functions and 
 from ship import place_ship, make_guess, all_ships_sunk  # Import functions related to ship placement, guessing, and checking if all ships are sunk.
 from shipconfig import select_ship_configuration  # Import function to select ship configuration.
 
+def convert_Char_to_intIndex( char_switch ):
+    # This function converts a char into a zero indexed number for the board
+    if( type( char_switch ) == str ):
+        c = char_switch.lower() #make sure the input is a string
+    else:
+        c = "error" #c is not a char, is bad
+    if c == "a" : #a to 0
+        return 0
+    elif c == "b" : #b to 1
+        return 1
+    elif c == "c" : #c to 2
+        return 2
+    elif c == "d" : #d to 3
+        return 3
+    elif c == "e" : #e to 4
+        return 4
+    elif c == "f" : #f to 5
+        return 5
+    elif c == "g" : #g to 6
+        return 6
+    elif c == "h" : #h to 7
+        return 7
+    elif c == "i" : #i to 8
+        return 8
+    elif c == "j" : #j to 9
+        return 9
+    else:
+        return -1 #error
+
 def place_all_ships(board, player_name, ship_sizes):
     print(f"{player_name}, you will now place your ships.")  # Inform the player that they are placing ships.
     ship_positions = {}  # Dictionary to store ship positions: (row, col) -> ship_id.
@@ -18,8 +47,10 @@ def place_all_ships(board, player_name, ship_sizes):
 def get_player_guess(player_name):
     while True:  # Loop until valid coordinates are provided.
         try:
-            guess_row = int(input(f"{player_name}, enter the row to guess (0-{board_size-1}): "))  # Get the row guess from the player.
-            guess_col = int(input(f"{player_name}, enter the column to guess (0-{board_size-1}): "))  # Get the column guess from the player.
+            guess_row = int(input(f"{player_name}, enter the row to guess (1-{board_size}): "))  # Get the row guess from the player. (1-10)
+            guess_col = str(input(f"{player_name}, enter the column to guess (A-J): "))  # Get the column guess from the player. (a-j)
+            guess_row = guess_row - 1 #make zero indexed
+            guess_col = convert_Char_to_intIndex( guess_col ) #converts the char input to a 0 indexed value
             
             # Check if the guess is within the valid range.
             if 0 <= guess_row < board_size and 0 <= guess_col < board_size:
