@@ -10,7 +10,7 @@ async function main(game) {
 
 class GameMaster {
   constructor() {
-    this.ui = UIConstructor;
+    this.ui = UIConstructor();
     this.gm = new GameModel();
     this.msgToUI = null;
     this.msgToGm = null;
