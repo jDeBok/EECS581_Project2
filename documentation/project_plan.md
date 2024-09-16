@@ -358,6 +358,8 @@ I'll write more documentation for this later when I figure more out for it.
 
 Generally, this will handle all input and output, including mouseclicks etc. The GameModel will handle everything in-between. Depending on how much time is available, I'll try to make something cool. But I'll start small and just make something functional.
 
+(It went horribly wrong)
+
 ### GameCell
 
 A cell that makes up any board.
