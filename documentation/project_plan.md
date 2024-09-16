@@ -52,6 +52,8 @@
 
 ## General Notes
 
+(To the next team: sorry. Also the original UI didn't get finished because we ran out of time, so it's a crappy CLI-like interface)
+
 My hope is that if you read and understand this entire document, the amount we'll have to meddle with each other's work will be minimal. This probably won't be the case because my thoughts are a little scattered and this might not be the easiest document to follow because I'm making with a time constraint in mind. I apologize if it's too long. I want to write out as much as possible to have good reference material.
 
 Not everything here has to be set in stone, but I think we should aim to keep the **Message Format** as close as possible to this specification; not because it's particularly good or well thought out, but because then we can focus on internal behaviors for each class based on the message format.
