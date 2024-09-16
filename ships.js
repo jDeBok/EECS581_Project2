@@ -26,10 +26,11 @@
 
 const Orientation = Object.freeze({
     // Enum for orientation of the ship, i.e. which direction the ship is facing.
-    Up: 'Up',   // Note: Board stored in (row, column) format, moving 'up' decrements the value of Y coords.
-    Down: 'Down',
-    Left: 'Left',
-    Right: 'Right'
+    // Note: Board stored in (row, column) format, moving 'up' decrements the value of Y coords.
+    Up: 'Up',   //orientation of the ship is up from origin 
+    Down: 'Down', //orintation of the ship is down from the origin 
+    Left: 'Left', //orientation of the ship is left from the origin 
+    Right: 'Right' //orientation of the ship is right from the origin 
 });
 
 class Coord {
@@ -38,12 +39,12 @@ class Coord {
         this.col = col;  // Column coordinate
     }
 
-    equals(otherCoord) {
+    equals(otherCoord) { //compares with another coord 
         return this.row === otherCoord.row && this.col === otherCoord.col; // Check if two coordinates are the same
     }
 }
 
-class Ship {
+class Ship { //ship class
     constructor(size, origin, orientation) {
         this.size = size;                // Length of ship
         this.origin = origin;            // Origin coordinate position
@@ -82,19 +83,19 @@ class Ship {
 
     // Handle a segment being hit
     segmentHit() {
-        if (this.liveSegments > 0) {
-            this.liveSegments -= 1;
+        if (this.liveSegments > 0) { //if this ship still has live segments 
+            this.liveSegments -= 1; //subtract one from the total of live segements
         }
     }
 
     // Check if the ship is sunk
     isSunk() {
-        return this.liveSegments === 0;
+        return this.liveSegments === 0; //return true if the number of live segments is 0 
     }
 
     // Check if a coordinate is within this ship
     contains(coord) {
-        return this.segments.some(segment => segment.position.equals(coord));
+        return this.segments.some(segment => segment.position.equals(coord)); //returns true if the coordinate is in the ship 
     }
 }
 
@@ -107,21 +108,21 @@ class ShipSegment {
 
     // Notify the ship that this segment has been hit
     reportHit() {
-        if (this.isAlive) {
-            this.isAlive = false;
-            this.parent.segmentHit();
+        if (this.isAlive) { //if segemnt is alive
+            this.isAlive = false; //change isalive to false 
+            this.parent.segmentHit(); //report the hit to the parent 
         }
     }
 
     // Check if the parent ship is sunk
     isParentDead() {
-        return this.parent.isSunk();
+        return this.parent.isSunk(); //returns true if the parent ship is sunk 
     }
 }
 
-class GameCell {
+class GameCell { //gamecell class 
     constructor() {
-        this.content = null;
+        this.content = null; //initialize variables
         this.isShotAt = false;
         this.isHit = false;
     }
