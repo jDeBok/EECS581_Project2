@@ -28,5 +28,6 @@ const Color = Object.freeze({
   TextBox: "#B4BBCD",
   TextBoxStroke: "#161F26",
   TextColor: "#161F26",
-  RedTruth: "#9E1919"
+  RedTruth: "#9E1919",
+  HitGreen: "#23A241"
 });
