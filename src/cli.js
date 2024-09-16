@@ -60,7 +60,7 @@ function UIConstructor() {
 
 
   function drawGridForPlacement(board) {
-    asciiOut.innerHtml = `Place your ships, player ${player + 1}\n`;
+    asciiOut2.innerHtml = `Place your ships, player ${player + 1}\n`;
     for (let i = 0; i < 10; i++) {
       for (let j = 0; j < 10; j++) {
         asciiOut.innerHtml += board[i][j].content === null ? "~" : "s";
@@ -84,7 +84,7 @@ function UIConstructor() {
   }
 
   function drawGridForMainGameTargetPlayer(board) {
-    asciiOut.innerHtml = `Enemy's board\n`;
+    asciiOut2.innerHtml = `Enemy's board\n`;
     for (let i = 0; i < 10; i++) {
       for (let j = 0; j < 10; j++) {
         let outchar = board[i][j].isShotAt ? "x" : "~";
