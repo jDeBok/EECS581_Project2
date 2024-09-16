@@ -23,6 +23,7 @@
  * 
  */
 
+
 class GameModel {  // Class object that contains and updates the game state
     constructor() {
         this.gamemode = Object.freeze({     // Enum for Game Mode 
@@ -37,7 +38,7 @@ class GameModel {  // Class object that contains and updates the game state
         this.currentPlayer = null;
         this.p1Ships = []; //init array for playerships
         this.p2Ships = [];
-        this.p1Shots = []; //inti array for playershots
+        this.p1Shots = []; //init array for playerhsots
         this.p2Shots = [];
         this.unplacedShips = [];
         this.boards = {
@@ -65,12 +66,62 @@ class GameModel {  // Class object that contains and updates the game state
         this.mainGameHandler = new MainGameHandler({ [Player.P1]: this.p1Ships, [Player.P2]: this.p2Ships }, { [Player.P1]: [], [Player.P2]: [] }, this.boards, Player.P1, Player.P2);
     }
 
-    
+
     recieveMessage = function(message) {
         let messageBack = new MessageToUICode; //initializng message back
         switch(message.code) {
-            case MessageToGameModelCode.Advance:
-                break;
+            case MessageToGameModelCode.Advance: // Used in transitions between states | Drew Meyer
+                switch (GameModel.gamemode) {    // Check current state to transition to new state
+                    
+                    // If Title Screen, advance to Rule Select
+                    case Gamemode.TitleScreen:
+                        messageBack = {
+                            code: MessageToUICode.ShowRuleSelect,    // Send UI code for Rule Select
+                            content: {
+                                gamemode: Gamemode.RuleSelect,   // Send new game mode Rule Select
+                                currentPlayer: Player.P1         // Start with player 1
+                            }
+                        };
+                        break;
+                    
+                    // If Rule Select, advance to Ship Placement
+                    case Gamemode.RuleSelect:
+                        messageBack = {
+                            code: MessageToUICode.ShowRuleSelect,   // Present board to players for ship placement
+                            content: {
+                                gamemode: Gamemode.PlaceShips,         // Send new game mode Place Ships
+                                currentPlayer: Player.P1,              // Start with player 1
+                                p1_ships: Player.P1.ships,                  // Player 1's ship array initially empty
+                                p2_ships: Player.P2.ships,                  // Player 2's ship array initially empty
+                                p1_unplacedShips: Player.P1.unplacedShips,  // Player 1's ships that must be placed
+                                p2_unplacedShips: Player.P2.unplacedShips   // Player 2's ships that must be placed
+                            }
+                        };
+                        break;
+                    
+                    // If Place Ships, advance to Main Game
+                    case Gamemode.PlaceShips:
+                        messageBack = {
+                            code: MessageToUICode.EndPlacementMode,  // Send message to end ship placement
+                            content: {
+                                gamemode: Gamemode.MainGame,  // Send new game mode Main Game
+                                currentPlayer: Player.P1,     // Set current player
+                                targetPlater: Player.P2       // Set target player
+                            }
+                        };
+                        break;
+
+                    case Gamemode.GameWin:
+                        messageBack = {
+                            code: MessageToUICode.ShowRuleSelect,  // When game ends, start new game
+                            content: {
+                                gamemode: Gamemode.RuleSelect,   // Send new game mode Rule Select
+                                currentPlayer: Player.P1         // Start with player 1
+                            }
+                        }
+                        
+                };
+
             case MessageToGameModelCode.MakeShot:
 
                 let coords = { x: message.content.x_val, y: message.content.y_val }; //coordinates of the shot being made i.e. (A1 ... B4 ... etc)Kyle Spragg
@@ -104,7 +155,7 @@ class GameModel {  // Class object that contains and updates the game state
                                 content: {
                                     result: "miss",
                                     coords: coords,
-                                    currrentPlayer: Player.P1,
+                                    currentPlayer: Player.P1,
                                     targetPlayer: Player.P2
                                 }
                             }
@@ -197,9 +248,6 @@ class GameModel {  // Class object that contains and updates the game state
 }
 
 
-
-
-
 class ShipPlacementHandler{
     constructor(unplacedShips,placedShips,boards,currentPlayer){
     this.unplacedShips = unplacedShips;  // Unplaced ships are held in a 2d array with one nested array for each player
@@ -208,7 +256,7 @@ class ShipPlacementHandler{
     this.currentPlayer = currentPlayer;  // Tracks current turn's player
     }
 
-    finishSetup(){  // Method to retrieve game state
+    finishSetup(){  // Method to retrieve board state
         return this.boards;
     }
 }
