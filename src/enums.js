@@ -1,4 +1,4 @@
-const Player = Object.freeze({
+const Player = Object.freeze({ // Enum for Player
 	P1: 0,
   	P2: 1
 });
