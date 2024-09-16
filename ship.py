@@ -1,3 +1,4 @@
+from board import board_size;
 def place_ship(board, ship_size, ship_id, ship_positions):
     while True:
         try:
@@ -7,12 +8,12 @@ def place_ship(board, ship_size, ship_id, ship_positions):
                 continue
             start_row = int(input("Enter starting row (0-9): "))
             start_col = int(input("Enter starting column (0-9): "))
-            if not (0 <= start_row < 10 and 0 <= start_col < 10):
+            if not (0 <= start_row < board_size and 0 <= start_col < board_size):
                 print("Invalid starting position. Please enter coordinates within the board.")
                 continue
 
             if orientation == 'H':
-                if start_col + ship_size > 10:
+                if start_col + ship_size > board_size:
                     print("Ship does not fit horizontally. Try again.")
                     continue
                 if any(board[start_row][start_col + i] != "~" for i in range(ship_size)):
@@ -24,7 +25,7 @@ def place_ship(board, ship_size, ship_id, ship_positions):
                 break
 
             elif orientation == 'V':
-                if start_row + ship_size > 10:
+                if start_row + ship_size > board_size:
                     print("Ship does not fit vertically. Try again.")
                     continue
                 if any(board[start_row + i][start_col] != "~" for i in range(ship_size)):

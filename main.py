@@ -1,7 +1,7 @@
-from board import create_board, print_board
+from board import create_board, print_board, board_size
 from ship import place_ship, make_guess, all_ships_sunk
 from shipconfig import select_ship_configuration
-BOARD_SIZE = 10;
+
 def place_all_ships(board, player_name, ship_sizes):
     print(f"{player_name}, you will now place your ships.")
     ship_positions = {}  # (row, col) -> ship_id
@@ -15,9 +15,9 @@ def place_all_ships(board, player_name, ship_sizes):
 def get_player_guess(player_name):
     while True:
         try:
-            guess_row = int(input(f"{player_name}, enter the row to guess (0-{BOARD_SIZE-1}): "))
-            guess_col = int(input(f"{player_name}, enter the column to guess (0-{BOARD_SIZE-1}): "))
-            if 0 <= guess_row < BOARD_SIZE and 0 <= guess_col < BOARD_SIZE:
+            guess_row = int(input(f"{player_name}, enter the row to guess (0-{board_size-1}): "))
+            guess_col = int(input(f"{player_name}, enter the column to guess (0-{board_size-1}): "))
+            if 0 <= guess_row < board_size and 0 <= guess_col < board_size:
                 return guess_row, guess_col
             else:
                 print("Invalid coordinates. Try again.")
