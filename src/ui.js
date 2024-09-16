@@ -3,7 +3,7 @@
  * UI module
  * 
  * Description:
- * 
+ * Enjoy your spaghetti.
  * 
  * Inputs:
  * - a Message from the GameModel routed through the GameMaster
@@ -29,6 +29,8 @@
 
 "use strict"
 
+
+// sorry you have to deal with this
 function UIConstructor() {
 
   // =========== "USING" STATEMENTS ===========
@@ -248,10 +250,80 @@ function UIConstructor() {
     return { render };
   }
 
+  function countships(ships, size) {
+    let count = 0;
+    for (let i = 0; i < ships.length; i++) {
+      count += ships[i].segments.length == size ? 1 : 0;
+    }
+    return count;
+  }
+
+  function makePlaceShipsLayout() {
+    let gridBbox = gameLayoutGrid.makeBbox(4, 6, 16, 18);
+    let gridBboxGrid = new LayoutGrid(gridBbox, 10, 10);
+    let playerNameBbox = gameLayoutGrid.makeBbox(8, 2, 12, 4);
+    let shipBtn1Bbox = gameLayoutGrid.makeBbox(18, 2, 22, 4);
+    let shipBtn2Bbox = gameLayoutGrid.makeBbox(18, 5, 22, 7);
+    let shipBtn3Bbox = gameLayoutGrid.makeBbox(18, 8, 22, 10);
+    let shipBtn4Bbox = gameLayoutGrid.makeBbox(18, 11, 22, 13);
+    let shipBtn5Bbox = gameLayoutGrid.makeBbox(18, 14, 22, 16);
+    let info1Bbox = gameLayoutGrid.makeBbox(18, 17, 22, 19);
+    let info2Bbox = gameLayoutGrid.makeBbox(18, 20, 22, 22);
+    let nextPlayerBtn = gameLayoutGrid.makeBbox(4, 4, 20, 20);
+    function render(ctx, eventInfo, ships, selectedShip, unplacedShips, player) {
+      let response = null;
+      let selectedShipLen = selectedShip.segments.length;
+      let highlightedTiles;
+      if (unplacedShips.length == 0) {
+        let btnText = player == Player.P1 ? "Next player's turn" : "Start the game!";
+        response ||= layoutButton(boardCtx, eventInfo, nextPlayerBtn, uibtn.NextPlayer, btnText);
+        return response;
+      }
+      drawGrid(boardCtx, gridBbox);
+      layoutRect(ctx, playerNameBbox, 
+        Color.TextBox, Color.TextBoxStroke, 
+        0.0005, `Player ${player}`, Color.TextColor);
+      response ||= layoutButton(boardCtx, eventInfo, shipBtn1Bbox, 
+                                uibtn.Select1, `S1: ${countships(unplacedShips, 1)}`);
+      response ||= layoutButton(boardCtx, eventInfo, shipBtn2Bbox, 
+                                uibtn.Select2, `S2: ${countships(unplacedShips, 2)}`);
+      response ||= layoutButton(boardCtx, eventInfo, shipBtn3Bbox, 
+                                uibtn.Select3, `S3: ${countships(unplacedShips, 3)}`);
+      response ||= layoutButton(boardCtx, eventInfo, shipBtn4Bbox, 
+                                uibtn.Select4, `S4: ${countships(unplacedShips, 4)}`);
+      response ||= layoutButton(boardCtx, eventInfo, shipBtn5Bbox, 
+                                uibtn.Select5, `S5: ${countships(unplacedShips, 5)}`);
+      layoutRect(ctx, info1Bbox, 
+                Color.TextBox, Color.TextBoxStroke, 
+                0.0005, `Rotate: `, Color.TextColor);
+      layoutRect(ctx, info2Bbox, 
+                  Color.TextBox, Color.TextBoxStroke, 
+                  0.0005, `A or D`, Color.TextColor);
+      if (cursor.relativeTo(screenBbox).in(gridBbox)) {
+        highlightedTiles = getHighlightedTiles(gridBboxGrid, 
+                                             cursor.relativeTo(screenBbox),
+                                             selectedShip);
+        for (let i = 0; i < highlightTiles.length; i++) {
+          highlightBbox(ctx, gridBboxGrid.getBbox(highlightTiles[i].col, highlightTiles[i].row));
+        }
+      }
+      drawShips(ctx, gridBboxGrid, ships);
+      if (click.relativeTo(screenBbox).in(gridBbox)) {
+        let coords = gridBboxGrid.findIntersectingBbox(cursor.relativeTo(screenBbox), true).coords;
+        return { code: uie.GridClick, content: { coords: coords}};
+      }
+      if (!response) {
+        return { code: uie.Nothing };
+      }
+      return response;
+    }
+    return { render };
+  }
+
   function makeAllLayouts() {
     return { titleScreen: makeTitleScreenLayout(),
              ruleSelect : makeRuleSelectLayout(),
-             placeShips : null,
+             placeShips : makePlaceShipsLayout(),
              mainGame   : null,
              gameWin    : makeGameWinLayout()
      };
@@ -369,7 +441,7 @@ function UIConstructor() {
       this.width = subdivXSquare * xDivs - xStart;
       this.height = subdivYSquare * yDivs - yStart;
     }
-    this.findIntersectingBbox = function(pt) {
+    this.findIntersectingBbox = function(pt, returnCoords=false) {
       if (
           pt.x < this.x 
           || pt.y < this.y
@@ -411,7 +483,13 @@ function UIConstructor() {
           lowerY = middleY;
         }
       }
-      return this.grid[foundY][foundX];
+      if (!returnCoords) {
+        return this.grid[foundY][foundX];
+      }
+      else {
+        return { bbox: this.grid[foundY][foundX], coords: {row: y, col: x} };
+      }
+      
     }
     this.getBbox = function(y, x) {
       return this.grid[y][x];
@@ -474,10 +552,17 @@ function UIConstructor() {
       this.click  = click;
       this.key    = key;
     }
+    this.markAsRead = function() {
+      click.useValue = false;
+      key.useValue = false;
+    }
   }
 
   EventInfo.invalidate = function() {
+    click.x = null;
+    click.y = null;
     click.useValue = false;
+    key.key = null;
     key.useValue = false;
     isPolling = false;
   }
@@ -489,6 +574,9 @@ function UIConstructor() {
 
   // ship sprites
   let shipbody, shiptip, shiprubble;
+
+  // i'm stupid
+  let selectedShipGlobal;
 
   // functions on intervals that need to be revoked/set differently
   let frameRenderFunc;
@@ -523,8 +611,8 @@ function UIConstructor() {
   // For key tracking
   let key = {key: undefined, useValue: false};
 
-  // Audio context
-  let audioCtx;
+  // Audio context, would have been used for sfx
+  // let audioCtx;
   
 
   // =========== FUNCS ON INTERVAL ===========
@@ -667,6 +755,65 @@ function UIConstructor() {
   }
   // { END STACK OVERFLOW CODE }
 
+  function getHighlightedTiles(bboxGrid, cursor, selectedShip) {
+    let curTile = bboxGrid.findIntersectingBbox(cursor, true);
+    if (!selectedShip) {
+      return curTile.grid;
+    }
+    else {
+      let tiles = [];
+      let xStretch = 0;
+      let yStretch = 0;
+      switch (selectedShip.orientation) {
+        case Orientation.Up:
+          yStretch -= selectedShip.segments.length - 1;
+          break;
+        case Orientation.Right:
+          xStretch += selectedShip.segments.length - 1;
+          break;
+        case Orientation.Down:
+          yStretch += selectedShip.segments.length - 1;
+          break;
+        case Orientation.Left:
+          xStretch -= selectedShip.segments.length - 1;
+          break;
+      }
+      if (curTile.coords.row + yStretch > 9) {
+        selectedShip.pos.row =  9 - (curTile.coords.row + yStretch - 9);
+      }
+      else if (curTile.coords.col + xStretch > 9) {
+        selectedShip.pos.col =  9 - (curTile.coords.col + xStretch - 9);
+      }
+      else if (curTile.coords.row + yStretch < 0) {
+        selectedShip.pos.row =  0 - (curTile.coords.row + yStretch);
+      }
+      else if (curTile.coords.col + xStretch < 0) {
+        selectedShip.pos.col =  0 - (curTile.coords.col + xStretch);
+      }
+      for (let i = 0; i < selectedShip.segments.length; i++) {
+        switch (selectedShip.orientation) {
+          case Orientation.Up:
+            tiles.push(new Coord(curTile.coords.row - i,
+                                 curTile.coords.col));
+            break;
+          case Orientation.Right:
+            tiles.push(new Coord(curTile.coords.row,
+                                 curTile.coords.col + i));
+            break;
+          case Orientation.Down:
+            tiles.push(new Coord(curTile.coords.row + i,
+                                 curTile.coords.col));
+            break;
+          case Orientation.Left:
+            tiles.push(new Coord(curTile.coords.row,
+                                 curTile.coords.col - i));
+            break;
+        }
+      }
+      return tiles;
+    }
+  }
+
   // =========== DRAWING FUNCTIONS (BOARD) ===========
 
   // assuming it's passed a square bbox
@@ -757,7 +904,7 @@ function UIConstructor() {
     }
   }
 
-  
+
 
 
   // =========== FRAME RENDER FUNCTIONS ===========
@@ -770,9 +917,9 @@ function UIConstructor() {
     intervalFuncCode = setInterval(func, Constant.FrameInterval);
   }
 
-  function highlightBbox(bbox) {
-    boardCtx.fillStyle = "rgb(0, 0, 0, 0.5)";
-    boardCtx.fillRect(bbox.x, bbox.y, bbox.width, bbox.height);
+  function highlightBbox(ctx, bbox) {
+    ctx.fillStyle = "rgb(0, 130, 90, 0.5)";
+    ctx.fillRect(bbox.x, bbox.y, bbox.width, bbox.height);
   }
 
   // =========== LOGIC & ROUTING ===========
@@ -841,7 +988,57 @@ function UIConstructor() {
     }
   }
 
+
+
+  async function PlaceShipStep(msg) {
+    let innerEvent;
+    isPolling = true;
+    let eventInfo = new EventInfo();
+    let ships = msg.content.ships[msg.content.currentPlayer];
+    let unplacedShips = msg.content.unplacedShips[msg.content.currentPlayer];
+    let selectedShip = !(selectedShipGlobal) && ships.length != 0 ? ships[0] : selectedShipGlobal;
+    while (true) {
+      eventInfo.latest();
+      if (eventInfo.key.key == "A") {
+        rotateShip(Rotation.Clockwise);
+      }
+      else if (eventInfo.key.key == "D") {
+        rotateShip(Rotation.CounterClockwise);
+      }
+      innerEvent = layouts.placeShips.render(boardCtx, eventInfo, ships, 
+                                            selectedShip, unplacedShips, msg.content.currentPlayer);
+      if (innerEvent.code != uie.Nothing) {
+        switch (innerEvent.code) {
+          case uie.buttonClicked:
+            // NEEDS TO BE FILLED IN
+            break;
+        }
+      }
+      eventInfo.markAsRead();
+      await sleep(Constant.FrameInterval);
+    }
+  }
+
   
+
+  function rotateShip(ship, rotation) {
+    if (rotation == Rotation.Clockwise) {
+      ship.orientation = (ship.orientation + 1) % 4;
+    }
+    else {
+      ship.orientation = ship.orientation - 1;
+      if (ship.orientation < 0) {
+        ship.orientation = Orientation.Left;
+      }
+    }
+    for (let i = 0; i < ship.segments.length; i++) {
+      let dx = ship.orientation == Orientation.Right ? 1 : 0;
+      dx = ship.orientation == Orientation.Left ? -1 : 0;
+      let dy = ship.orientation == Orientation.Down ? 1 : 0;
+      dy = ship.orientation == Orientation.Up ? -1 : 0;
+      ship.segments[i].pos(ship.pos.row + dy * i, ship.pos.col + dx * i);
+    }
+    }
 
   // =========== DEBUG ===========
 
