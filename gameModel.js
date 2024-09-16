@@ -54,7 +54,7 @@ class GameModel {  // Class object that contains and updates the game state
         this.targetPlayer = Player.P2;
         this.p1Ships = [];
         this.p2Ships = [];
-        this.unplacedShips = [];
+        this.unplacedShips = [[]];
         this.boards = Array.from({ length: 10 }, () => 
             Array.from({ length: 10 }, () => 
                 Array.from({ length: 10 }, () => new GameCell())
@@ -105,7 +105,7 @@ class GameModel {  // Class object that contains and updates the game state
                             content: {
                                 gamemode: Gamemode.MainGame,  // Send new game mode Main Game
                                 currentPlayer: Player.P1,     // Set current player
-                                targetPlater: Player.P2       // Set target player
+                                targetPlayer: Player.P2       // Set target player
                             }
                         };
                         break;
@@ -185,11 +185,14 @@ class GameModel {  // Class object that contains and updates the game state
                 shipToPlace = message.content.shipToPlace;
                 index = message.content.shipToPlaceIndex;
                 unplacedShips[currentPlayer].splice(index, 1);
-                shipToPlace.initializeSegments();
 
                 if(currentPlayer == Player.P1) { p1Ships.push_back(shipToPlace); }
                 else { p2Ships.push_back(shipToPlace) }
-                
+
+                for(let segment of ship.segments) {
+                    boards[currentPlayer][segment.position.row][segment.position.col] = segment;
+                }
+
                 messageBack = {
                     code: MessageToUICode.PlacementResult,
                     content: { 
