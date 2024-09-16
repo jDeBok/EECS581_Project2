@@ -22,7 +22,7 @@
  * 2024-09-08
  * 
  */
-import { Orientation, Coord, Ship, ShipSegment, GameCell } from './ships.js';
+import { Orientation, Coord, Ship, ShipSegment, GameCell } from './ships.js'; //import ships Class functions
 
 class GameModel {  // Class object that contains and updates the game state
     constructor() {
@@ -35,10 +35,10 @@ class GameModel {  // Class object that contains and updates the game state
             TitleScreen: 'TitleScreen'      // State handlnig start screen
         });
     
-        this.currentPlayer = null; //initialize 
+        this.currentPlayer = null; //initialize currentPLayer
         this.p1Ships = []; //init array for playerships
         this.p2Ships = [];
-        this.unplacedShips = [];
+        this.unplacedShips = [[]]; //array for unplaced ships
         this.boards = Array.from({ length: 10 }, () => 
             Array.from({ length: 10 }, () => 
                 Array.from({ length: 10 }, () => new GameCell())
@@ -48,7 +48,7 @@ class GameModel {  // Class object that contains and updates the game state
         this.mainGameHandler = null; //init main handler 
     }
     
-    init() {
+    init() { //resets members if game is won
         this.gamemode = this.gamemode.TitleScreen;
         this.currentPlayer = Player.P1;
         this.targetPlayer = Player.P2;
@@ -79,6 +79,7 @@ class GameModel {  // Class object that contains and updates the game state
                                 currentPlayer: Player.P1         // Start with player 1
                             }
                         };
+                        return messageBack; //return message
                         break;
                     
                     // If Rule Select, advance to Ship Placement
@@ -94,7 +95,7 @@ class GameModel {  // Class object that contains and updates the game state
                                 p2_unplacedShips: Player.P2.unplacedShips   // Player 2's ships that must be placed
                             }
                         };
-                        break;
+                        return messageBack;//sends message back
                     
                     // If Place Ships, advance to Main Game
                     case Gamemode.PlaceShips:
@@ -106,7 +107,7 @@ class GameModel {  // Class object that contains and updates the game state
                                 targetPlayer: Player.P2       // Set target player
                             }
                         };
-                        break;
+                        return messageBack;//sends message back
 
                     case Gamemode.GameWin:
                         messageBack = {
@@ -116,16 +117,17 @@ class GameModel {  // Class object that contains and updates the game state
                                 currentPlayer: Player.P1         // Start with player 1
                             }
                         }
-                        
+                        return messageBack;//sends message back
+
                 };
 
-                case MessageToGameModelCode.MakeShot:
+                case MessageToGameModelCode.MakeShot: //make shot message
 
-                let hit_coords = message.content.coords;
-                let cell = boards[targetPlayer][hit_coords.row][hit_coords.col];
+                let hit_coords = message.content.coords; //gets shot coords
+                let cell = boards[targetPlayer][hit_coords.row][hit_coords.col];//gets cell of coords
 
-                if (cell.isShotAt === true) {
-                    messageBack = {
+                if (cell.isShotAt === true) { //if cell is already shot at
+                    messageBack = { //send back badshot message
                         code: MessageToUICode.BadShot,
                         content: {
                           gamemode: Gamemode.MainGame,
@@ -137,12 +139,13 @@ class GameModel {  // Class object that contains and updates the game state
                           boards: boards
                         }
                     };
+                    return messageBack;//sends message back
                 
-                } else if (cell.content === NULL) {
+                } else if (cell.content === NULL) { //if cell is not a ship segment
 
-                    cell.isShotAt = true;
+                    cell.isShotAt = true; //label cell as shot on board
 
-                    messageBack = {
+                    messageBack = { //return with cell as shot at, but not hit since its not a ship segment
                         code: MessageToUICode.ShotResult, // send back a bad shot message
                         content: {
                             gamemode: Gamemode.MainGame,
@@ -157,30 +160,31 @@ class GameModel {  // Class object that contains and updates the game state
                             boards: boards
                         }
                     };
+                    return messageBack;//sends message back
                 } else if (cell.isAlive){ //send hit message
 
-                        cell.content.reportHit(); 
-                        destroyed = (cell.content.isParentDead());
+                        cell.content.reportHit(); //report valid hit
+                        destroyed = (cell.content.isParentDead()); //check if ship is now destroyed
 
-                        cell.isShotAt = true;
-                        cell.isHit = true;
+                        cell.isShotAt = true; // set is shot at to true
+                        cell.isHit = true; // set is hit as true
 
-                        let allSunk = true;
+                        let allSunk = true; //checks to see if all ships are sunk
 
-                        if (targetPlayer === Player.P1) {
+                        if (targetPlayer === Player.P1) { //iterates through p1 ships, checks if ship is sunk --> if not evaluate to false
                             for (let ship of this.p1_ships) {
                                 if (!ship.isSunk()) {
                                     allSunk = false;
                                 }
                             }
                         } else {
-                            for (let ship of this.p2_ships) {
+                            for (let ship of this.p2_ships) {  //iterates through p2 ships, checks if ship is sunk --> if not evaluate to false
                                 if (!ship.isSunk()) {
                                     allSunk = false;
                                 }
                             }
                         }
-                        messageBack = {
+                        messageBack = { //return message with updated shots, hit segment, board, and destroyed ships/win
                             code: MessageToUICode.ShotResult,
                             content: {
                                 gamemode: Gamemode.MainGame,
@@ -195,6 +199,7 @@ class GameModel {  // Class object that contains and updates the game state
                                 boards: boards,
                             }   
                         }
+                        return messageBack;//sends message back
             }
 
             break;
@@ -202,10 +207,10 @@ class GameModel {  // Class object that contains and updates the game state
             case MessageToGameModelCode.RuleSelect:
                 let numShips = message.content.rules; //Initialize how many ships for each player
                 unplaced = [[], []] //Initialize unplaced ships array
-                for(let i = 1; i <= numShips; i++) {
+                for(let i = 1; i <= numShips; i++) { //gives both player 1 and 2 unplaced ships
                     let addShip = new Ship(i, new Coord(0,0), Orientation.Up);
                     unplaced[0].push(addShip);
-                    unplaced[1].push(addShip)
+                    unplaced[1].push(addShip);
                 }
                 messageBack.content = {
                     gamemode: Gamemode.PlaceShips,
@@ -213,6 +218,7 @@ class GameModel {  // Class object that contains and updates the game state
                     ships: [[]], // array of empty arrays
                     unplacedShips: unPlaced //edit based off of rules given                     
                 }
+                return messageBack; //sends message back
 
                 break;
                 case MessageToGameModelCode.StartGame: //start game 
@@ -233,13 +239,13 @@ class GameModel {  // Class object that contains and updates the game state
                     }
                     return messageBack; //sends message back
             default:
-                //put error
+                console.error(`Error: Case ${message} is not implemented.`) //throw error if case is not found
                 break;
         }
     }
 }
 
-class Message{
+class Message{ //message class containing code (type of message) and the content with that message for the UI
     constructor(){
         this.code = null;
         this.content = null;
