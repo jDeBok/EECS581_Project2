@@ -35,7 +35,7 @@ class GameModel {  // Class object that contains and updates the game state
             TitleScreen: 'TitleScreen'      // State handlnig start screen
         });
     
-        this.currentPlayer = null;
+        this.currentPlayer = null; //initialize 
         this.p1Ships = []; //init array for playerships
         this.p2Ships = [];
         this.unplacedShips = [];
