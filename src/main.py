@@ -75,6 +75,8 @@ def play_game():
     player2_positions, player2_segments = place_all_ships(player2_board, "Player 2", player1_ships)  # Player 2 places their ships with the same configuration.
 
     # Game loop
+    # Team 9 addition:
+    # Opponent's and current player's board will print, rather than just opponent's
     turn = 0  # Keep track of turns.
     while True:
         if turn % 2 == 0:  # If turn is even, it's Player 1's turn.

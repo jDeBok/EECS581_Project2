@@ -31,11 +31,16 @@ def convert_Char_to_intIndex( char_switch ):
 
 def place_ship(board, ship_size, ship_id, ship_positions):
     while True:  # Loop until a valid ship placement is made.
+        # Team 9 addition:
+        # Orientation will be skipped if the ship size is 1
         try:
             orientation = None
+            # If the ship size isn't 1, ask for the orientation
             if ship_size != 1:
                 # Ask the user for the ship's orientation (Horizontal or Vertical) and convert it to uppercase.
                 orientation = input(f"Enter orientation for ship of size {ship_size} (H for horizontal, V for vertical): ").upper()
+            # Otherwise just arbitrarily set orientation to horizontal
+            # Checking for other ships is unnecessary as well, as there will be no other ships, but I don't think its a priority to change this
             else:
                 orientation = "H"
                 # Check if the input orientation is valid (either 'H' or 'V').
