@@ -47,7 +47,7 @@ def place_all_ships(board, player_name, ship_sizes):
 def get_player_guess(player_name):
     while True:  # Loop until valid coordinates are provided.
         try:
-            guess_row = int(input(f"{player_name}, enter the row to guess (1-{board_size}): "))  # Get the row guess from the player. (1-10)
+            guess_row = int(input(f"\n{player_name}, enter the row to guess (1-{board_size}): "))  # Get the row guess from the player. (1-10)
             guess_col = str(input(f"{player_name}, enter the column to guess (A-J): "))  # Get the column guess from the player. (a-j)
             guess_row = guess_row - 1 #make zero indexed
             guess_col = convert_Char_to_intIndex( guess_col ) #converts the char input to a 0 indexed value
@@ -79,19 +79,23 @@ def play_game():
     while True:
         if turn % 2 == 0:  # If turn is even, it's Player 1's turn.
             current_player = "Player 1"
+            current_board = player1_board
             opponent_board = player2_board  # Player 1 is attacking Player 2's board.
             opponent_positions = player2_positions
             opponent_segments = player2_segments
         else:  # If turn is odd, it's Player 2's turn.
             current_player = "Player 2"
+            current_board = player2_board
             opponent_board = player1_board  # Player 2 is attacking Player 1's board.
             opponent_positions = player1_positions
             opponent_segments = player1_segments
         
         print(f"\n{current_player}'s turn")  # Announce the current player's turn.
-        print("\nOpponent's board (hidden):")
         # Print the opponent's board with ships hidden (represented as "~" if it's a ship).
         print_board([["~" if cell == "S" else cell for cell in row] for row in opponent_board])
+        # Print the current player's board
+        print("\n")
+        print_board(current_board)
 
         while True:
             guess_row, guess_col = get_player_guess(current_player)  # Get the current player's guess.
