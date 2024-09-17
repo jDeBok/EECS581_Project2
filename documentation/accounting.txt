@@ -1,2 +1,5 @@
 9/16/2024:
 Team meeting: 4:00 - 5:00.  Set up team responsibility split and GitHub setup.
+
+9/17/2024:
+Caden LeCluyse: 4:00-4:45. Added printing of both boards. Removed unnecessary of asking for h or v for ship size 1. Researched python stuff.
