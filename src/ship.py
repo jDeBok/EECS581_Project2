@@ -32,10 +32,13 @@ def convert_Char_to_intIndex( char_switch ):
 def place_ship(board, ship_size, ship_id, ship_positions):
     while True:  # Loop until a valid ship placement is made.
         try:
-            # Ask the user for the ship's orientation (Horizontal or Vertical) and convert it to uppercase.
-            orientation = input(f"Enter orientation for ship of size {ship_size} (H for horizontal, V for vertical): ").upper()
-            
-            # Check if the input orientation is valid (either 'H' or 'V').
+            orientation = None
+            if ship_size != 1:
+                # Ask the user for the ship's orientation (Horizontal or Vertical) and convert it to uppercase.
+                orientation = input(f"Enter orientation for ship of size {ship_size} (H for horizontal, V for vertical): ").upper()
+            else:
+                orientation = "H"
+                # Check if the input orientation is valid (either 'H' or 'V').
             if orientation not in ['H', 'V']:
                 print("Invalid orientation. Please enter H or V.")  # Inform the user of invalid input.
                 continue  # Restart the loop if invalid orientation is provided.
@@ -46,8 +49,8 @@ def place_ship(board, ship_size, ship_id, ship_positions):
             
             start_row = start_row - 1 #uses zero indexing now
             start_col = convert_Char_to_intIndex( start_col ) #converts the char input to a 0 indexed value
-            
-            
+                
+                
             # Check if the starting position is within the bounds of the board.
             if not (0 <= start_row < board_size and 0 <= start_col < board_size):
                 print("Invalid starting position. Please enter coordinates within the board.")  # Inform the user of out-of-bound coordinates.
