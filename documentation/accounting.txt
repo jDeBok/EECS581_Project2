@@ -1,5 +1,6 @@
 9/16/2024:
-Team meeting: 4:00 - 5:00.  Set up team responsibility split and GitHub setup.
+Team meeting: 4:00 - 5:00.  1 Hour. Set up team responsibility split and GitHub setup.
 
 9/17/2024:
-Caden LeCluyse: 4:00-4:45. Added printing of both boards. Removed unnecessary of asking for h or v for ship size 1. Researched python stuff.
+Caden LeCluyse: 4:00-4:45. 45 Minutes. Added printing of both boards. Removed unnecessary asking for h or v for ship size 1. Researched python stuff.
+Caden LeCluyse: 6:50-7:20. 30 Minutes. Added printing of board while setting up ships. Researched more python stuff.
