@@ -1,4 +1,4 @@
-from board import board_size  # Import board_size from the board module.
+from board import board_size, print_board  # Import board_size from the board module.
 
 def convert_Char_to_intIndex( char_switch ):
     # This function converts a char into a zero indexed number for the board
@@ -98,6 +98,7 @@ def place_ship(board, ship_size, ship_id, ship_positions):
                 break  # Exit the loop once the ship is successfully placed.
         except ValueError:
             print("Please enter valid numbers.")  # Inform the user if they input non-numeric values.
+    print_board(board)
 
 def make_guess(board, row, col, ship_positions, ship_segments):
     # If the guessed position contains part of a ship.

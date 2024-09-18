@@ -6,7 +6,7 @@ def create_board():
 def print_board(board):
     #print("  " + " ".join(str(i) for i in range(board_size)))  # Print column headers (0 to board_size-1).
     #Additions by team 9
-    print("   A B C D E F G H I J") #print column headers ( a through j)
+    print("\n   A B C D E F G H I J") #print column headers ( a through j)
     #end Team 9 additions
     for idx, row in enumerate(board):
         #additions
@@ -16,3 +16,4 @@ def print_board(board):
             print( " " + str(idx + 1), " ".join(row))  # Print each row's index followed by its contents, joined by spaces. Index 1 through 10
         #end additions
         #print(idx, " ".join(row))  # Print each row's index followed by its contents, joined by spaces.
+    print("\n")

@@ -32,6 +32,7 @@ def convert_Char_to_intIndex( char_switch ):
         return -1 #error
 
 def place_all_ships(board, player_name, ship_sizes):
+    print_board(board)
     print(f"{player_name}, you will now place your ships.")  # Inform the player that they are placing ships.
     ship_positions = {}  # Dictionary to store ship positions: (row, col) -> ship_id.
     ship_segments = {}   # Dictionary to store ship segments: ship_id -> set of (row, col).
