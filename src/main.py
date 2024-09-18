@@ -1,3 +1,5 @@
+import os #For clearing the screen
+import time # For sleep
 from board import create_board, print_board, board_size  # Import functions and variables related to the board.
 from ship import place_ship, make_guess, all_ships_sunk  # Import functions related to ship placement, guessing, and checking if all ships are sunk.
 from shipconfig import select_ship_configuration  # Import function to select ship configuration.
@@ -72,11 +74,23 @@ def play_game():
     player1_ships = select_ship_configuration()  # Let Player 1 select their ship configuration.
     player1_positions, player1_segments = place_all_ships(player1_board, "Player 1", player1_ships)  # Player 1 places their ships.
 
+    # Team 9 change:
+    # The screen will now clear and wait for the users to switch seats
+    time.sleep(4)
+    os.system("clear")
+    time.sleep(5)
+
     print("\nPlayer 2 setup:")
     print("Player 1 has chosen their ship configuration.")  # Notify Player 2 that they must use the same configuration as Player 1.
     print("You must follow the same configuration.")
     print("Player 2, you must set up your ships.")
     player2_positions, player2_segments = place_all_ships(player2_board, "Player 2", player1_ships)  # Player 2 places their ships with the same configuration.
+
+    # Team 9 change:
+    # The screen will now clear and wait for the users to switch seats
+    time.sleep(4)
+    os.system("clear")
+    time.sleep(5)
 
     # Game loop
     # Team 9 addition:
@@ -116,6 +130,12 @@ def play_game():
             break  # End the game.
         
         turn += 1  # Move to the next turn.
+
+        # Team 9 change:
+        # The screen will now clear and wait for the users to switch seats
+        time.sleep(4)
+        os.system("clear")
+        time.sleep(4)
 
 if __name__ == "__main__":
     play_game()  # Start the game if the script is run directly.
