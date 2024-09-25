@@ -7,4 +7,4 @@ Caden LeCluyse: 6:50-7:20. 30 Minutes. Added printing of board while setting up 
 Caden LeCluyse: 11:45-12:05. 20 Minutes. Added clearing of the screen.
 
 9/24/2024:
-Jesse DeBok: 7:15 - , Updated estimate.txt.  
+Jesse DeBok: 7:15 - 8:30, Updated estimate.txt, added easy/hard AI, initial setup for AI's. Tested. Notes: Need to add custom shot to AI's once those are added
