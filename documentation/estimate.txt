@@ -1,1 +1,7 @@
-
+Estimates for Project 2:
+1. Required functionality for Project 1:  1 hour.  Just need to fix indexing, board printing, and clearing the screen.
+2. Create AI to play against (6 hours): Initial setup 1 hour, player is able to choose one or two player game, and difficulty of AI.
+  a) Easy: 2, set up that the AI shoots randomly
+  b) Medium: 3, shoots randomly until it hits a boat, in which case shoot orthogonally.  Bit more in depth as the code needs to keep track of whether the previous shot hit.
+  c) Hard: 2, always hits the player's boat.  Just pick a spot that a boat controls and shoot at that location.
+3. Custom Addition: 4 hours.  Create UML diagram (1 hour). Give the player the option to use a special shot, then give location, and keep track of how many uses the player gets. (3 hours)
