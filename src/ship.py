@@ -1,5 +1,5 @@
 from board import board_size, print_board  # Import board_size from the board module.
-
+import random #get random for AI placement
 def convert_Char_to_intIndex( char_switch ):
     # This function converts a char into a zero indexed number for the board
     if( type( char_switch ) == str ):
@@ -100,6 +100,44 @@ def place_ship(board, ship_size, ship_id, ship_positions):
             print("Please enter valid numbers.")  # Inform the user if they input non-numeric values.
     print_board(board)
 
+def AI_place_ship(board, ship_size, ship_id, ship_positions): #Team 9 added, makes random placements for AI
+    while( True ): #could randomly be invalid #TODO
+        # Team 9 addition:
+        # Orientation will be skipped if the ship size is 1
+        orientation = random.choice( ['H', 'V' ] ) #randomly choose H or V
+        
+        # If the ship is placed horizontally.
+        if orientation == 'H':
+            start_row = random.randint( 0, 9 ) #chooses 0 to 9 inclusive
+            start_col = random.randint( 0, board_size - ship_size ) #uses zero indexing now, only chooses valid spots
+            # Check if the ship overlaps with any existing ships. If true, then just randomly pick again
+            if any(board[start_row][start_col + i] != "~" for i in range(ship_size)):
+                continue  # Restart the loop.
+
+            # Place the ship on the board by updating the grid with 'S' for each position.
+            for i in range(ship_size):
+                board[start_row][start_col + i] = "S"  # Mark the ship's position on the board.
+                ship_positions[(start_row, start_col + i)] = ship_id  # Store the ship's position in ship_positions.
+            break  # Exit the loop once the ship is successfully placed.
+
+        # If the ship is placed vertically.
+        elif orientation == 'V':
+            start_row = random.randint( 0, board_size - ship_size ) #chooses valid spots
+            start_col = random.randint( 0, 9 ) #uses zero indexing
+
+            # Check if the ship overlaps with any existing ships.
+            if any(board[start_row + i][start_col] != "~" for i in range(ship_size)):
+                #print("Ship overlaps with another ship. Try again.")  # Inform the user of overlap with another ship.
+                #Uncomment above line to see when AI messes up, for debugging
+                continue  # Restart the loop.
+
+            # Place the ship on the board by updating the grid with 'S' for each position.
+            for i in range(ship_size):
+                board[start_row + i][start_col] = "S"  # Mark the ship's position on the board.
+                ship_positions[(start_row + i, start_col)] = ship_id  # Store the ship's position in ship_positions.
+            break  # Exit the loop once the ship is successfully placed.
+        
+#end team 9 addition AI_place ship
 def make_guess(board, row, col, ship_positions, ship_segments):
     # If the guessed position contains part of a ship.
     if board[row][col] == "S":
