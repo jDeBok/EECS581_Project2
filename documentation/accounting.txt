@@ -8,3 +8,7 @@ Caden LeCluyse: 11:45-12:05. 20 Minutes. Added clearing of the screen.
 
 9/24/2024:
 Jesse DeBok: 7:15 - 8:30, Updated estimate.txt, added easy/hard AI, initial setup for AI's. Tested. Notes: Need to add custom shot to AI's once those are added
+Jack Ford: 11:00pm - ...
+
+9/25/2024:
+... 12:00am, 1 hour. Added 3 functions for the 3 new custom shots.

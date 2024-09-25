@@ -159,6 +159,199 @@ def make_guess(board, row, col, ship_positions, ship_segments):
     else:
         return "Already guessed!", False  # Return the result as already guessed and indicate the guess was invalid.
 
+#Team 9 addition
+#function to hit all the cells in a given 3x3 surrounding area
+def make_aoe_guess(board, row, col, ship_positions, ship_segments):
+	flag = False #initialize the flag for the return value
+
+	if board[row][col] == "O": #if the guessed position has already been guessed
+		return "Already guessed!", False #return the result as already guessed and indicate the guess was invalid
+
+	if row > 0 and col > 0 and row < 9 and col < 9: #if the guess is not on the boarder
+		for i in range(-1, 2): #loop through all the allowable rows
+			for j in range(-1, 2): #loop through all the allowable columns
+				if board[row + i][col + j] == "S": #if the guessed position contains part of a ship
+					board[row + i][col + j] == "X" #mark the position as a hit
+					ship_id = ship_positions.get((row + i, col + j)) #retrieve the ship_id for the hit position
+
+					if ship_id is not None: #if the ship_id is populated
+						ship_segments[ship_id].remove((row + i, col + j)) #remove the hit segment from the ship's segment list
+
+						if not ship_segments[ship_id]: #if all the segments of the ship are hit, the ship is sunk
+							print(f"Ship {ship_id} has been sunk!") #announce that the ship has been sunk
+
+					flag = True #set the flag so that the function returns true
+
+				elif board[row + i][col + j] == "~": #if the guessed position contains water
+					board[row + i][col + j] = "O" #mark the position as a miss
+
+	elif col > 0 and row < 9 and col < 9: #if the guess is on the boarder
+		for i in range(0, 2): #loop through all the allowable rows
+			for j in range(-1, 2): #loop through all the allowable columns
+				if board[row + i][col + j] == "S": #if the guessed position contains part of a ship
+					board[row + i][col + j] == "X" #mark the position as a hit
+					ship_id = ship_positions.get((row + i, col + j)) #retrieve the ship_id for the hit position
+
+					if ship_id is not None: #if the ship_id is populated
+						ship_segments[ship_id].remove((row + i, col + j)) #remove the hit segment from the ship's segment list
+
+						if not ship_segments[ship_id]: #if all the segments of the ship are hit, the ship is sunk
+							print(f"Ship {ship_id} has been sunk!") #announce that the ship has been sunk
+
+					flag = True #set the flag so that the function returns true
+
+				elif board[row + i][col + j] == "~": #if the guessed position contains water
+					board[row + i][col + j] = "O" #mark the position as a miss
+
+	if row > 0 and row < 9 and col < 9: #if the guess is on the boarder
+		for i in range(-1, 2): #loop through all the allowable rows
+			for j in range(0, 2): #loop through all the allowable columns
+				if board[row + i][col + j] == "S": #if the guessed position contains part of a ship
+					board[row + i][col + j] == "X" #mark the position as a hit
+					ship_id = ship_positions.get((row + i, col + j)) #retrieve the ship_id for the hit position
+
+					if ship_id is not None: #if the ship_id is populated
+						ship_segments[ship_id].remove((row + i, col + j)) #remove the hit segment from the ship's segment list
+
+						if not ship_segments[ship_id]: #if all the segments of the ship are hit, the ship is sunk
+							print(f"Ship {ship_id} has been sunk!") #announce that the ship has been sunk
+
+					flag = True #set the flag so that the function returns true
+
+				elif board[row + i][col + j] == "~": #if the guessed position contains water
+					board[row + i][col + j] = "O" #mark the position as a miss
+
+	if row > 0 and col > 0 and col < 9: #if the guess is on the boarder
+		for i in range(-1, 1): #loop through all the allowable rows
+			for j in range(-1, 2): #loop through all the allowable columns
+				if board[row + i][col + j] == "S": #if the guessed position contains part of a ship
+					board[row + i][col + j] == "X" #mark the position as a hit
+					ship_id = ship_positions.get((row + i, col + j)) #retrieve the ship_id for the hit position
+
+					if ship_id is not None: #if the ship_id is populated
+						ship_segments[ship_id].remove((row + i, col + j)) #remove the hit segment from the ship's segment list
+
+						if not ship_segments[ship_id]: #if all the segments of the ship are hit, the ship is sunk
+							print(f"Ship {ship_id} has been sunk!") #announce that the ship has been sunk
+
+					flag = True #set the flag so that the function returns true
+
+				elif board[row + i][col + j] == "~": #if the guessed position contains water
+					board[row + i][col + j] = "O" #mark the position as a miss
+
+	if row > 0 and col > 0 and row < 9: #if the guess is on the boarder
+		for i in range(-1, 2): #loop through all the allowable rows
+			for j in range(-1, 1): #loop through all the allowable columns
+				if board[row + i][col + j] == "S": #if the guessed position contains part of a ship
+					board[row + i][col + j] == "X" #mark the position as a hit
+					ship_id = ship_positions.get((row + i, col + j)) #retrieve the ship_id for the hit position
+
+					if ship_id is not None: #if the ship_id is populated
+						ship_segments[ship_id].remove((row + i, col + j)) #remove the hit segment from the ship's segment list
+
+						if not ship_segments[ship_id]: #if all the segments of the ship are hit, the ship is sunk
+							print(f"Ship {ship_id} has been sunk!") #announce that the ship has been sunk
+
+					flag = True #set the flag so that the function returns true
+
+				elif board[row + i][col + j] == "~":
+					board[row + i][col + j] = "O" #mark the position as a miss
+
+	if row < 9 and col < 9: #if the guess is on the boarder
+		for i in range(0, 2): #loop through all the allowable rows
+			for j in range(0, 2): #loop through all the allowable columns
+				if board[row + i][col + j] == "S": #if the guessed position contains part of a ship
+					board[row + i][col + j] == "X" #mark the position as a hit
+					ship_id = ship_positions.get((row + i, col + j)) #retrieve the ship_id for the hit position
+
+					if ship_id is not None: #if the ship_id is populated
+						ship_segments[ship_id].remove((row + i, col + j)) #remove the hit segment from the ship's segment list
+
+						if not ship_segments[ship_id]: #if all the segments of the ship are hit, the ship is sunk
+							print(f"Ship {ship_id} has been sunk!") #announce that the ship has been sunk
+
+					flag = True #set the flag so that the function returns true
+
+				elif board[row + i][col + j] == "~": #if the guessed position contains water
+					board[row + i][col + j] = "O" #mark the position as a miss
+
+	if row > 0 and col > 0: #if the guess is on the boarder
+		for i in range(-1, 1): #loop through all the allowable rows
+			for j in range(-1, 1): #loop through all the allowable columns
+				if board[row + i][col + j] == "S": #if the guessed position contains part of a ship
+					board[row + i][col + j] == "X" #mark the position as a hit
+					ship_id = ship_positions.get((row + i, col + j)) #retrieve the ship_id for the hit position
+
+					if ship_id is not None: #if the ship_id is populated
+						ship_segments[ship_id].remove((row + i, col + j)) #remove the hit segment from the ship's segment list
+
+						if not ship_segments[ship_id]: #if all the segments of the ship are hit, the ship is sunk
+							print(f"Ship {ship_id} has been sunk!") #announce that the ship has been sunk
+
+					flag = True #set the flag so that the function returns true
+
+				elif board[row + i][col + j] == "~": #if the guessed position contains water
+					board[row + i][col + j] = "O" #mark the position as a miss
+
+	if flag: #check the flag to determine the return value
+		return "Hit!", True #return the result of the guess as a hit and indicate the guess was valid
+
+	else:
+		return "Miss!", True #return the result of the guess as a miss and indicate the guess was valid
+
+#function to hit all the cells in a given row - column should be initialized to 0 when called
+def make_row_guess(board, row, col=0, ship_positions, ship_segments):
+	flag = False #initialize the flag for the return value
+
+	for i in range(10): #for all the columns in the guessed row
+		if board[row][i] == "S": #if the guessed position contains part of a ship
+			board[row][i] = "X" #mark the position as a hit
+			ship_id = ship_positions.get((row, i)) #retrieve the ship_id for the hit position
+
+			if ship_id is not None: #if the ship_id is populated
+				ship_segments[ship_id].remove((row, i)) #remove the hit segment from the ship's segment list
+
+				if not ship_segments[ship_id]: #if all segments of the ship are hit, the ship is sunk
+					print(f"Ship {ship_id} has been sunk!") #announce that the ship has been sunk
+
+			flag = True #set the flag so that the function returns true
+
+		elif board[row][i] == "~": #if the guessed position contains water
+			board[row][i] = "O" #mark the position as a miss
+
+	if flag: #check the flag to determine the return value
+		return "Hit!", True #return the result of the guess as a hit and indicate the guess was valid
+
+	else:
+		return "Miss!", True #return the result of the guess as a miss and indicate the guess was valid
+
+#function to hit all the cells in a given column - row should be initialized to 0 when called
+def make_col_guess(board, row=0, col, ship_positions, ship_segments):
+	flag = False #initialize the flag for the return value
+
+	for i in range(10): #for all the rows in the guessed column
+		if board[i][col] == "S": #if the guessed position contains part of a ship
+			board[i][col] = "X" #mark the position as a hit
+			ship_id = ship_positions.get((i, col)) #retrieve the ship_id for the hit position
+
+			if ship_id is not None: #if the ship_id is populated
+				ship_segments[ship_id].remove((i, col)) #remove the hit segment from the ship's segment list
+
+				if not ship_segments[ship_id]: #if all segments of the ship are hit, the ship is sunk
+					print(f"Ship {ship_id} has been sunk!") #announce that the ship has been sunk
+
+			flag = True #set the flag so that the function returns true
+
+		elif board[i][col] == "~": #if the guessed position contains water
+			board[i][col] = "O" #mark the position as a miss
+
+	if flag: #check the flag to determine the return value
+		return "Hit!", True #return the result of the guess as a hit and indicate the guess was valid
+
+	else:
+		return "Miss!", True #return the result of the guess as a miss and indicate the guess was valid
+
+#end Team 9 addition for the three custom shot functions
 def all_ships_sunk(ship_segments):
     # Check if all ships have been sunk by verifying that all ship segments are empty.
     return all(not segments for segments in ship_segments.values())  # Return True if all ships are sunk, False otherwise.
