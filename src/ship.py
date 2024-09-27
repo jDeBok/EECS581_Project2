@@ -300,8 +300,9 @@ def make_aoe_guess(board, row, col, ship_positions, ship_segments):
 		return "Miss!", True #return the result of the guess as a miss and indicate the guess was valid
 
 #function to hit all the cells in a given row - column should be initialized to 0 when called
-def make_row_guess(board, row, col=0, ship_positions, ship_segments):
+def make_row_guess(board, row, col, ship_positions, ship_segments):
 	flag = False #initialize the flag for the return value
+	col = 0
 
 	for i in range(10): #for all the columns in the guessed row
 		if board[row][i] == "S": #if the guessed position contains part of a ship
@@ -326,8 +327,9 @@ def make_row_guess(board, row, col=0, ship_positions, ship_segments):
 		return "Miss!", True #return the result of the guess as a miss and indicate the guess was valid
 
 #function to hit all the cells in a given column - row should be initialized to 0 when called
-def make_col_guess(board, row=0, col, ship_positions, ship_segments):
+def make_col_guess(board, row, col, ship_positions, ship_segments):
 	flag = False #initialize the flag for the return value
+	row = 0
 
 	for i in range(10): #for all the rows in the guessed column
 		if board[i][col] == "S": #if the guessed position contains part of a ship
