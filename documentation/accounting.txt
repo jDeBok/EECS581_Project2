@@ -12,3 +12,6 @@ Jack Ford: 11:00pm - ...
 
 9/25/2024:
 ... 12:00am, 1 hour. Added 3 functions for the 3 new custom shots.
+
+9/27/2024
+Ben Schulte: 5:00-6:00, 1 hour. Added functionality for custom shots for players.
