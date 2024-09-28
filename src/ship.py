@@ -170,15 +170,15 @@ def make_aoe_guess(board, row, col, ship_positions, ship_segments):
 	if row > 0 and col > 0 and row < 9 and col < 9: #if the guess is not on the boarder
 		for i in range(-1, 2): #loop through all the allowable rows
 			for j in range(-1, 2): #loop through all the allowable columns
-				if board[row + i][col + j] == "S": #if the guessed position contains part of a ship
+				if board[row + i][col + j] == "S": #if the guessed position contains part of a ship_id
 					board[row + i][col + j] == "X" #mark the position as a hit
 					ship_id = ship_positions.get((row + i, col + j)) #retrieve the ship_id for the hit position
-
+                    
 					if ship_id is not None: #if the ship_id is populated
-						ship_segments[ship_id].remove((row + i, col + j)) #remove the hit segment from the ship's segment list
-
-						if not ship_segments[ship_id]: #if all the segments of the ship are hit, the ship is sunk
-							print(f"Ship {ship_id} has been sunk!") #announce that the ship has been sunk
+						if len(ship_segments[ship_id]) > 0: # If there is actually a space there
+							ship_segments[ship_id].remove((row + i, col + j)) #remove the hit segment from the ship's segment list
+							if not ship_segments[ship_id]: #if all the segments of the ship are hit, the ship is sunk
+								print(f"Ship {ship_id} has been sunk!") #announce that the ship has been sunk
 
 					flag = True #set the flag so that the function returns true
 
@@ -193,7 +193,8 @@ def make_aoe_guess(board, row, col, ship_positions, ship_segments):
 					ship_id = ship_positions.get((row + i, col + j)) #retrieve the ship_id for the hit position
 
 					if ship_id is not None: #if the ship_id is populated
-						ship_segments[ship_id].remove((row + i, col + j)) #remove the hit segment from the ship's segment list
+						if len(ship_segments[ship_id]) > 0: # If there is actually a space there
+						    ship_segments[ship_id].remove((row + i, col + j)) #remove the hit segment from the ship's segment list
 
 						if not ship_segments[ship_id]: #if all the segments of the ship are hit, the ship is sunk
 							print(f"Ship {ship_id} has been sunk!") #announce that the ship has been sunk
@@ -211,7 +212,8 @@ def make_aoe_guess(board, row, col, ship_positions, ship_segments):
 					ship_id = ship_positions.get((row + i, col + j)) #retrieve the ship_id for the hit position
 
 					if ship_id is not None: #if the ship_id is populated
-						ship_segments[ship_id].remove((row + i, col + j)) #remove the hit segment from the ship's segment list
+						if len(ship_segments[ship_id]) > 0: # If there is actually a space there
+						    ship_segments[ship_id].remove((row + i, col + j)) #remove the hit segment from the ship's segment list
 
 						if not ship_segments[ship_id]: #if all the segments of the ship are hit, the ship is sunk
 							print(f"Ship {ship_id} has been sunk!") #announce that the ship has been sunk
@@ -229,7 +231,8 @@ def make_aoe_guess(board, row, col, ship_positions, ship_segments):
 					ship_id = ship_positions.get((row + i, col + j)) #retrieve the ship_id for the hit position
 
 					if ship_id is not None: #if the ship_id is populated
-						ship_segments[ship_id].remove((row + i, col + j)) #remove the hit segment from the ship's segment list
+						if len(ship_segments[ship_id]) > 0: # If there is actually a space there
+						    ship_segments[ship_id].remove((row + i, col + j)) #remove the hit segment from the ship's segment list
 
 						if not ship_segments[ship_id]: #if all the segments of the ship are hit, the ship is sunk
 							print(f"Ship {ship_id} has been sunk!") #announce that the ship has been sunk
@@ -247,7 +250,8 @@ def make_aoe_guess(board, row, col, ship_positions, ship_segments):
 					ship_id = ship_positions.get((row + i, col + j)) #retrieve the ship_id for the hit position
 
 					if ship_id is not None: #if the ship_id is populated
-						ship_segments[ship_id].remove((row + i, col + j)) #remove the hit segment from the ship's segment list
+						if len(ship_segments[ship_id]) > 0: # If there is actually a space there
+						    ship_segments[ship_id].remove((row + i, col + j)) #remove the hit segment from the ship's segment list
 
 						if not ship_segments[ship_id]: #if all the segments of the ship are hit, the ship is sunk
 							print(f"Ship {ship_id} has been sunk!") #announce that the ship has been sunk
@@ -265,7 +269,8 @@ def make_aoe_guess(board, row, col, ship_positions, ship_segments):
 					ship_id = ship_positions.get((row + i, col + j)) #retrieve the ship_id for the hit position
 
 					if ship_id is not None: #if the ship_id is populated
-						ship_segments[ship_id].remove((row + i, col + j)) #remove the hit segment from the ship's segment list
+						if len(ship_segments[ship_id]) > 0: # If there is actually a space there
+							ship_segments[ship_id].remove((row + i, col + j)) #remove the hit segment from the ship's segment list
 
 						if not ship_segments[ship_id]: #if all the segments of the ship are hit, the ship is sunk
 							print(f"Ship {ship_id} has been sunk!") #announce that the ship has been sunk
@@ -283,7 +288,8 @@ def make_aoe_guess(board, row, col, ship_positions, ship_segments):
 					ship_id = ship_positions.get((row + i, col + j)) #retrieve the ship_id for the hit position
 
 					if ship_id is not None: #if the ship_id is populated
-						ship_segments[ship_id].remove((row + i, col + j)) #remove the hit segment from the ship's segment list
+						if len(ship_segments[ship_id]) > 0: # If there is actually a space there
+							ship_segments[ship_id].remove((row + i, col + j)) #remove the hit segment from the ship's segment list
 
 						if not ship_segments[ship_id]: #if all the segments of the ship are hit, the ship is sunk
 							print(f"Ship {ship_id} has been sunk!") #announce that the ship has been sunk
@@ -302,7 +308,6 @@ def make_aoe_guess(board, row, col, ship_positions, ship_segments):
 #function to hit all the cells in a given row - column should be initialized to 0 when called
 def make_row_guess(board, row, col, ship_positions, ship_segments):
 	flag = False #initialize the flag for the return value
-	col = 0
 
 	for i in range(10): #for all the columns in the guessed row
 		if board[row][i] == "S": #if the guessed position contains part of a ship
@@ -329,7 +334,6 @@ def make_row_guess(board, row, col, ship_positions, ship_segments):
 #function to hit all the cells in a given column - row should be initialized to 0 when called
 def make_col_guess(board, row, col, ship_positions, ship_segments):
 	flag = False #initialize the flag for the return value
-	row = 0
 
 	for i in range(10): #for all the rows in the guessed column
 		if board[i][col] == "S": #if the guessed position contains part of a ship
