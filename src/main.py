@@ -2,8 +2,16 @@ import os #For clearing the screen
 import time # For sleep
 import random #for AI
 from board import create_board, print_board, board_size  # Import functions and variables related to the board.
-from ship import AI_place_ship, place_ship, make_guess, all_ships_sunk  # Import functions related to ship placement, guessing, and checking if all ships are sunk.
+from ship import AI_place_ship, place_ship, make_guess, make_aoe_guess, make_row_guess, make_col_guess, all_ships_sunk  # Import functions related to ship placement, guessing, and checking if all ships are sunk.
 from shipconfig import select_ship_configuration  # Import function to select ship configuration.
+from enum import Enum # For classifying the types of shots
+
+# Classifications for a type of shot
+class Shot(Enum):
+    REGULAR = 1
+    AOE = 2
+    ROW = 3
+    COLUMN = 4
 
 def convert_Char_to_intIndex( char_switch ):
     # This function converts a char into a zero indexed number for the board
@@ -61,13 +69,18 @@ def AI_place_all_ships(board, player_name, ship_sizes): #Team 9 addition.  Use s
         ship_segments[ship_id] = set((r, c) for r, c in ship_positions if ship_positions[(r, c)] == ship_id)  # Record positions of the ship.
     return ship_positions, ship_segments  # Return ship positions and segments.
 
-def get_player_guess(player_name):
+# Team 9: added a parameter for the shot type that determines if we need to ask for row/column
+def get_player_guess(player_name, shot_type):
     while True:  # Loop until valid coordinates are provided.
         try:
-            guess_row = int(input(f"\n{player_name}, enter the row to guess (1-{board_size}): "))  # Get the row guess from the player. (1-10)
-            guess_col = str(input(f"{player_name}, enter the column to guess (A-J): "))  # Get the column guess from the player. (a-j)
-            guess_row = guess_row - 1 #make zero indexed
-            guess_col = convert_Char_to_intIndex( guess_col ) #converts the char input to a 0 indexed value
+            guess_row = 0
+            guess_col = 0
+            if( not Shot(shot_type).name == 'COLUMN' ): # Do not need to specify a row with a column shot
+                guess_row = int(input(f"\n{player_name}, enter the row to guess (1-{board_size}): "))  # Get the row guess from the player. (1-10)
+                guess_row = guess_row - 1 #make zero indexed
+            if( not Shot(shot_type).name == 'ROW' ): # Do not need to specify a column with a row shot
+                guess_col = str(input(f"{player_name}, enter the column to guess (A-J): "))  # Get the column guess from the player. (a-j)
+                guess_col = convert_Char_to_intIndex( guess_col ) #converts the char input to a 0 indexed value
             
             # Check if the guess is within the valid range.
             if 0 <= guess_row < board_size and 0 <= guess_col < board_size:
@@ -95,6 +108,22 @@ def AI_get_player_guess( d, op_board ):
                 if( op_board[ i ][ j ] == "S" ): #see if there is a ship at that spot
                     return i, j #found ship, return that row and column
         return -1, -1 #ERROR
+
+def get_shot_type(player_name, num_shots):
+    while True:  # Loop until valid coordinates are provided.
+        try:
+            print(f"\n{player_name} you have {num_shots} custom shots left.")
+            shot_type = int(input("Which type of shot? Regular (1), AOE (2), Row (3), or Column (4): ")) # Get the type of shot from the user
+            
+            # Check if the guess is within the valid range.
+            if shot_type > 0 and shot_type < 5:
+                return shot_type  # Return valid guess coordinates.
+            else:
+                print("Invalid shot number. Try again.")  # Inform the player of invalid input.
+
+        except ValueError:
+            print("Please enter a valid input")  # Inform the player if input is not a number.
+
 
 def play_game():
     #Addition for one player game
@@ -135,6 +164,12 @@ def play_game():
         os.system("clear")
         time.sleep(5)
         #only do this if 2 player game
+        # Team 9 change:
+        # The screen will now clear and wait for the users to switch seats
+        time.sleep(4)
+        os.system("clear")
+        time.sleep(5)
+        #only do this if 2 player game
 
     if( players ): #one player, so do AI setup
         player2_positions, player2_segments = AI_place_all_ships(player2_board, "Player 2", player1_ships)  # Player 2 places their ships with the same configuration.
@@ -159,6 +194,11 @@ def play_game():
     # Game loop
     # Team 9 addition:
     # Opponent's and current player's board will print, rather than just opponent's
+
+    # Team 9 addition:
+    # Adding variables: player1_special_shots and player2_special_shots to keep track of number of special shots left for each player
+    player1_special_shots = 3
+    player2_special_shots = 3
     turn = 0  # Keep track of turns.
     while True:
         if turn % 2 == 0:  # If turn is even, it's Player 1's turn.
@@ -167,12 +207,14 @@ def play_game():
             opponent_board = player2_board  # Player 1 is attacking Player 2's board.
             opponent_positions = player2_positions
             opponent_segments = player2_segments
+            num_special_shots = player1_special_shots
         else:  # If turn is odd, it's Player 2's turn.
             current_player = "Player 2"
             current_board = player2_board
             opponent_board = player1_board  # Player 2 is attacking Player 1's board.
             opponent_positions = player1_positions
             opponent_segments = player1_segments
+            num_special_shots = player2_special_shots
         if( players ): #one player, so slighly different
             if( turn % 2 == 0 ): #player 1 turn, so normal
                 print(f"\n{current_player}'s turn")  # Announce the current player's turn.
@@ -183,8 +225,31 @@ def play_game():
                 print_board(current_board)
 
                 while True:
-                    guess_row, guess_col = get_player_guess(current_player)  # Get the current player's guess.
-                    result, valid = make_guess(opponent_board, guess_row, guess_col, opponent_positions, opponent_segments)  # Make a guess and check if it's valid.
+                    shot_type = Shot['REGULAR'].value # Default show is REGULAR
+                    if( player1_special_shots > 0 ): # If the player has more special shots, get the type of the shot
+                        shot_type = get_shot_type(current_player, player1_special_shots)
+                    guess_row, guess_col = get_player_guess(current_player, shot_type)  # Get the current player's guess.
+                    # Team 9: Determining the function to use based on the shot
+                    if( Shot(shot_type).name == 'REGULAR' ):
+                        result, valid = make_guess(opponent_board, guess_row, guess_col, opponent_positions, opponent_segments)  # Make a guess and check if it's valid.
+                    elif( Shot(shot_type).name == 'AOE' ):
+                        result, valid = make_aoe_guess(opponent_board, guess_row, guess_col, opponent_positions, opponent_segments)  # Make a guess and check if it's valid.
+                        player1_special_shots -= 1 # Used a special shot, so decrease the number
+                        if( player1_special_shots == 0 ): # Note if we are out of special shots
+                            print("You are out of special shots. Only regular shots can be made now.")
+                    elif( Shot(shot_type).name == 'ROW' ):
+                        result, valid = make_row_guess(opponent_board, guess_row, guess_col, opponent_positions, opponent_segments)  # Make a guess and check if it's valid.
+                        player1_special_shots -= 1 # Used a special shot, so decrease the number
+                        if( player1_special_shots == 0 ): # Note if we are out of special shots
+                            print("You are out of special shots. Only regular shots can be made now.")
+                    else: # ( Shot(shot_type).name == 'COLUMN' )
+                        result, valid = make_col_guess(opponent_board, guess_row, guess_col, opponent_positions, opponent_segments)  # Make a guess and check if it's valid.
+                        player1_special_shots -= 1 # Used a special shot, so decrease the number
+                        if( player1_special_shots == 0 ): # Note if we are out of special shots
+                            print("You are out of special shots. Only regular shots can be made now.")
+
+                    
+
                     print(result)  # Print the result of the guess.
                     if valid:
                         break  # Exit the loop if the shot was valid.
@@ -224,11 +289,38 @@ def play_game():
             print_board(current_board)
 
             while True:
-                guess_row, guess_col = get_player_guess(current_player)  # Get the current player's guess.
-                result, valid = make_guess(opponent_board, guess_row, guess_col, opponent_positions, opponent_segments)  # Make a guess and check if it's valid.
-                print(result)  # Print the result of the guess.
-                if valid:
-                    break  # Exit the loop if the shot was valid.
+                    shot_type = Shot['REGULAR'].value # Default show is REGULAR
+                    if( num_special_shots > 0 ):
+                        shot_type = get_shot_type(current_player, num_special_shots)
+                    guess_row, guess_col = get_player_guess(current_player, shot_type)  # Get the current player's guess.
+                    # Team 9: Determining the function to use based on the shot
+                    if( Shot(shot_type).name == 'REGULAR'):
+                        result, valid = make_guess(opponent_board, guess_row, guess_col, opponent_positions, opponent_segments)  # Make a guess and check if it's valid.
+                    elif( Shot(shot_type).name == 'AOE' ):
+                        result, valid = make_aoe_guess(opponent_board, guess_row, guess_col, opponent_positions, opponent_segments)  # Make a guess and check if it's valid.
+                        num_special_shots -= 1 # Used a special shot, so decrease the number
+                        if( num_special_shots == 0 ):
+                            print("You are out of special shots. Only regular shots can be made now.")
+                    elif( Shot(shot_type).name == 'ROW' ):
+                        result, valid = make_row_guess(opponent_board, guess_row, 0, opponent_positions, opponent_segments)  # Make a guess and check if it's valid.
+                        num_special_shots -= 1 # Used a special shot, so decrease the number
+                        if( num_special_shots == 0 ):
+                            print("You are out of special shots. Only regular shots can be made now.")
+                    else: # ( Shot(shot_type).name == 'COLUMN' )
+                        result, valid = make_col_guess(opponent_board, 0, guess_col, opponent_positions, opponent_segments)  # Make a guess and check if it's valid.
+                        num_special_shots -= 1 # Used a special shot, so decrease the number
+                        if( num_special_shots == 0 ):
+                            print("You are out of special shots. Only regular shots can be made now.")
+
+                    # Update the special shot counters
+                    if( current_player == "Player 1" ):
+                        player1_special_shots = num_special_shots
+                    elif( current_player == "Player 2" ):
+                        player2_special_shots = num_special_shots
+
+                    print(result)  # Print the result of the guess.
+                    if valid:
+                        break  # Exit the loop if the shot was valid.
 
             # Check if all ships of the opponent have been sunk.
             if all_ships_sunk(opponent_segments):
