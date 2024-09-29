@@ -1,3 +1,7 @@
+#Program: main class
+#Description:  Runs main gameplay loop, calls the functions defined in other classes to run the game
+#Author: Team 2, modifications Team 9
+#
 import os #For clearing the screen
 import time # For sleep
 import random #for AI
