@@ -1,3 +1,8 @@
+#Program: ship.py contains methods for guessing and places ships
+#Description:  Methods to place ship both AI and player, also make guess,
+#validate guess, and check if all ships are sunk
+#Author: Team 2, modifications Team 9
+#
 from board import board_size, print_board  # Import board_size from the board module.
 import random #get random for AI placement
 def convert_Char_to_intIndex( char_switch ):
