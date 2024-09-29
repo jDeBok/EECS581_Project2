@@ -90,8 +90,8 @@ def get_player_guess(player_name, shot_type):
         except ValueError:
             print("Please enter valid numbers.")  # Inform the player if input is not a number.
 
-def AI_get_player_guess( d, op_board ):
-    if( d == 1 ): #easy
+def AI_get_player_guess( d, op_board, prev_hit, prev_row, prev_col ):
+    if( d == 1 or ( ( d == 2) and ( prev_hit == False ) ) ): #easy or medium has not hit previously
         while( True ):
             #Fires randomly, however does not shoot where it has already shot
             guess_row = random.randint( 0, 9 ) #get random int between 0 and 9 inclusive
@@ -99,8 +99,23 @@ def AI_get_player_guess( d, op_board ):
             if( op_board[ guess_row][ guess_col ] == "O" ): #check if this has already been shot at
                 continue#print( "AI tried to shoot already shot place" ) #TODO: remove, only here for debugging #randomly guess again
             return guess_row, guess_col #return valid coords
-    elif( d == 2 ): #medium
-        return #todo
+    elif( d == 2 and prev_hit == True): #Medium and has hit another ship previously
+        #needs to fire orthononally adjacent spaces to find other hits until ship is sunk
+        #Assume: ship was NOT sunk, previous shot WAS a hit
+        #first do left orthog
+        if( ( prev_col != 0 ) and ( op_board[ prev_row ][ prev_col - 1 ] != "O" ) and ( op_board[ prev_row ][ prev_col - 1 ] != "X" ) ): #if orthog to left is valid and not already shot, return it
+            return prev_row, ( prev_col - 1 ) #return orthog to left
+        #then right orthog
+        elif( ( prev_col != 9 ) and ( op_board[ prev_row ][ prev_col + 1 ] != "O" ) and ( op_board[ prev_row ][ prev_col + 1 ] != "X" ) ): #if orthog to right is valid and not already shot, return it
+            return prev_row, ( prev_col + 1 ) #return orthog to right
+        #then up orthog
+        elif( ( prev_row != 0 ) and ( op_board[ prev_row - 1 ][ prev_col ] != "O" ) and ( op_board[ prev_row - 1 ][ prev_col ] != "X" ) ): #if orthog up is valid and not already shot
+            return ( prev_row - 1 ), prev_col #return orthog up
+        #then down orthog
+        elif( ( prev_row != 9 ) and ( op_board[ prev_row + 1 ][ prev_col ] != "O" ) and ( op_board[ prev_row + 1 ][ prev_col ] != "X" ) ): #if orthog down is valid and not already shot
+            return ( prev_row + 1 ), prev_col #return orthog down
+        else:
+            return -1, -1 #ERROR
     else: #hard
         #need to find position of a ship to hit, so just look at opponent's board
         for i in range( board_size ):
@@ -200,6 +215,9 @@ def play_game():
     player1_special_shots = 3
     player2_special_shots = 3
     turn = 0  # Keep track of turns.
+    prev_hit = False # keep track if the previous shot hit for medium AI difficulty
+    prev_row = -1 #previous shot row
+    prev_col = -1 #previous shot column
     while True:
         if turn % 2 == 0:  # If turn is even, it's Player 1's turn.
             current_player = "Player 1"
@@ -231,7 +249,7 @@ def play_game():
                     guess_row, guess_col = get_player_guess(current_player, shot_type)  # Get the current player's guess.
                     # Team 9: Determining the function to use based on the shot
                     if( Shot(shot_type).name == 'REGULAR' ):
-                        result, valid = make_guess(opponent_board, guess_row, guess_col, opponent_positions, opponent_segments)  # Make a guess and check if it's valid.
+                        result, valid, _ = make_guess(opponent_board, guess_row, guess_col, opponent_positions, opponent_segments)  # Make a guess and check if it's valid.
                     elif( Shot(shot_type).name == 'AOE' ):
                         result, valid = make_aoe_guess(opponent_board, guess_row, guess_col, opponent_positions, opponent_segments)  # Make a guess and check if it's valid.
                         player1_special_shots -= 1 # Used a special shot, so decrease the number
@@ -267,9 +285,21 @@ def play_game():
                 print( "AI Player's turn" ) #tell AI's turn
                 #print_board( current_board ) #here for debugging
                 while True:
-                    guess_row, guess_col = AI_get_player_guess( difficulty, opponent_board )  # Get the AI's guess
-                    result, valid = make_guess(opponent_board, guess_row, guess_col, opponent_positions, opponent_segments)  # Make a guess and check if it's valid.
+                    guess_row, guess_col = AI_get_player_guess( difficulty, opponent_board, prev_hit, prev_row, prev_col )  # Get the AI's guess
+                    result, valid, ship_sunk = make_guess(opponent_board, guess_row, guess_col, opponent_positions, opponent_segments)  # Make a guess and check if it's valid.
                     print(result)  # Print the result of the guess.
+                    if( result == "Hit!" and not ship_sunk ): #result hit and not sunk, start orthog
+                        prev_hit = True #previous shot was a hit
+                        prev_row = guess_row #save previous shot for medium difficulty
+                        prev_col = guess_col #save previous shot for medium difficulty
+                    elif( result == "Miss!" and prev_hit ): #result hit before, this was a miss, continue orthog
+                        prev_hit = True #previous shot was a hit in the past, doing orthog
+                        prev_row = prev_row #don't change previous shot as that is the shot I am going orthog around
+                    else: #sinking ship resets and goes back to random
+                        prev_hit = False #previous shot was not a hit or doing orthog
+                        prev_row = guess_row #save previous shot for medium difficulty
+                        prev_col = guess_col #save previous shot for medium difficulty
+                    #have to have OR previous hit was a hit and this shot was a miss, to keep going orthog
                     if valid:
                         break  # Exit the loop if the shot was valid.
 
@@ -295,7 +325,7 @@ def play_game():
                     guess_row, guess_col = get_player_guess(current_player, shot_type)  # Get the current player's guess.
                     # Team 9: Determining the function to use based on the shot
                     if( Shot(shot_type).name == 'REGULAR'):
-                        result, valid = make_guess(opponent_board, guess_row, guess_col, opponent_positions, opponent_segments)  # Make a guess and check if it's valid.
+                        result, valid, _ = make_guess(opponent_board, guess_row, guess_col, opponent_positions, opponent_segments)  # Make a guess and check if it's valid.
                     elif( Shot(shot_type).name == 'AOE' ):
                         result, valid = make_aoe_guess(opponent_board, guess_row, guess_col, opponent_positions, opponent_segments)  # Make a guess and check if it's valid.
                         num_special_shots -= 1 # Used a special shot, so decrease the number
