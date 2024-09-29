@@ -15,3 +15,5 @@ Jack Ford: 11:00pm - ...
 
 9/27/2024
 Ben Schulte: 5:00-6:00, 1 hour. Added functionality for custom shots for players.
+Jesse DeBok: 2:00 - 4:00, 2 hours.  Added medium AI.  Decided the AI shouldn't do custom shots, adds unneeded
+complexity.
