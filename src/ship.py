@@ -140,6 +140,7 @@ def AI_place_ship(board, ship_size, ship_id, ship_positions): #Team 9 added, mak
 #end team 9 addition AI_place ship
 def make_guess(board, row, col, ship_positions, ship_segments):
     # If the guessed position contains part of a ship.
+    ship_sunk = False #keep track there was a ship sunk for medium AI
     if board[row][col] == "S":
         board[row][col] = "X"  # Mark the position as a hit.
         ship_id = ship_positions.get((row, col))  # Retrieve the ship_id for the hit position.
@@ -148,16 +149,17 @@ def make_guess(board, row, col, ship_positions, ship_segments):
             # If all segments of the ship are hit, the ship is sunk.
             if not ship_segments[ship_id]:
                 print(f"Ship {ship_id} has been sunk!")  # Announce that the ship has been sunk.
-        return "Hit!", True  # Return the result of the guess as a hit and indicate the guess was valid.
+                ship_sunk = True #keep track there was a ship sunk for medium AI
+        return "Hit!", True, ship_sunk  # Return the result of the guess as a hit and indicate the guess was valid.
 
     # If the guessed position contains water.
     elif board[row][col] == "~":
-        board[row][col] = "O"  # Mark the position as a miss.
-        return "Miss!", True  # Return the result of the guess as a miss and indicate the guess was valid.
+        board[row][col] = "O"  # Mark the position as  a miss.
+        return "Miss!", True, ship_sunk  # Return the result of the guess as a miss and indicate the guess was valid.
 
     # If the guessed position has already been guessed.
     else:
-        return "Already guessed!", False  # Return the result as already guessed and indicate the guess was invalid.
+        return "Already guessed!", False, ship_sunk  # Return the result as already guessed and indicate the guess was invalid.
 
 #Team 9 addition
 #function to hit all the cells in a given 3x3 surrounding area
