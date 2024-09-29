@@ -1,3 +1,7 @@
+#Program: Ship config class
+#Description:  contains the configuration information for the battleships
+#Author: Team 2, modifications Team 9
+#
 # Dictionary storing ship configurations where the key represents the number of ships, 
 # and the value is a list representing the ship sizes.
 SHIP_CONFIGURATIONS = {
