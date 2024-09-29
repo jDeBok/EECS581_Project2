@@ -1,3 +1,7 @@
+#Program: board methods
+#Description:  creates the board and prints the board
+#Author: Team 2, modifications Team 9
+#
 board_size = 10  # Set the size of the board (a grid) to 10x10.
 
 def create_board():
