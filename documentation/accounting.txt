@@ -12,8 +12,12 @@ Jack Ford: 11:00pm - ...
 
 9/25/2024:
 ... 12:00am, 1 hour. Added 3 functions for the 3 new custom shots.
+Harry Ahrenholtz: 7:00-8:00, 1 hour. Tested easy and hard AI for edge cases.
 
 9/27/2024
 Ben Schulte: 5:00-6:00, 1 hour. Added functionality for custom shots for players.
 Jesse DeBok: 2:00 - 4:00, 2 hours.  Added medium AI.  Decided the AI shouldn't do custom shots, adds unneeded
 complexity.
+
+9/28/2024:
+Harry Ahrenholtz: 3:00-4:00, 1 hour. Tested AI and custom shots to ensure they meet the requirements.
